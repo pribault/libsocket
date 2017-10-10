@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 13:39:56 by pribault          #+#    #+#             */
-/*   Updated: 2017/10/08 17:21:47 by pribault         ###   ########.fr       */
+/*   Updated: 2017/10/10 21:22:33 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ static void	loop(t_client *client)
 
 int			start_client(t_client *client)
 {
-	if (!client || client->running ||
+	if (!client || (client->running & RECEIVER) ||
+	(client->running & AUTOCLEANER) ||
 	pthread_create(&client->receiver, NULL, (void*)&loop, client))
 		return (0);
 	client->running = 1;

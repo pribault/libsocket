@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 13:52:22 by pribault          #+#    #+#             */
-/*   Updated: 2017/10/08 17:26:48 by pribault         ###   ########.fr       */
+/*   Updated: 2017/10/10 21:21:06 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int		stop_server(t_server *server)
 {
 	if (!server || !(server->running & RECEIVER))
 		return (0);
+	stop_server_autocleaner(server);
 	pthread_mutex_lock(&server->receiver_mutex);
 	pthread_mutex_lock(&server->autocleaner_mutex);
 	pthread_cancel(server->receiver);

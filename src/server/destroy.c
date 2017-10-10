@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 12:12:42 by pribault          #+#    #+#             */
-/*   Updated: 2017/10/08 17:27:23 by pribault         ###   ########.fr       */
+/*   Updated: 2017/10/10 21:39:22 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ int		destroy_server(t_server *server)
 {
 	if (!server || close(server->sockfd) == -1)
 		return (0);
-	stop_server_autocleaner(server);
 	stop_server(server);
 	ft_vector_del(&server->waiting);
 	ft_vector_del(&server->clients);
