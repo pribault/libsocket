@@ -1,0 +1,5 @@
+#!/bin/sh
+
+make
+gcc -o client -I include -I libft/include client.c -L . -lsocket -L libft -lft
+gcc -o server -I include -I libft/include server.c -L . -lsocket -L libft -lft
