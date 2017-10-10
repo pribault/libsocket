@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:20:04 by pribault          #+#    #+#             */
-/*   Updated: 2017/10/10 19:15:12 by pribault         ###   ########.fr       */
+/*   Updated: 2017/10/10 20:51:20 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,10 @@ t_client	*new_client(char *ip, char *port, int prot)
 	new->addr = new->addresses;
 	while (new->addr)
 	{
-		// if (prot == TCP && tcp_connect(new))
-		// 	return (new);
-		// else if (prot == UDP && udp_connect(new))
-		// 	return (new);
-		ft_memdump((void*)new->addr->ai_addr + 4, new->addr->ai_addrlen);
+		if (prot == TCP && tcp_connect(new))
+			return (new);
+		else if (prot == UDP && udp_connect(new))
+			return (new);
 		new->addr = new->addr->ai_next;
 	}
 	return (free_and_return(new));

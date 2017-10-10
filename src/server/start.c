@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 13:40:04 by pribault          #+#    #+#             */
-/*   Updated: 2017/10/08 16:36:32 by pribault         ###   ########.fr       */
+/*   Updated: 2017/10/10 21:01:06 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ static void	loop(t_server *server)
 				client->last = time(NULL);
 			else
 			{
-				ft_printf("adding new client, id=%d\n", server->clients->n);
 				pack.id.last = time(NULL);
 				ft_vector_add(server->clients, &pack.id);
 			}

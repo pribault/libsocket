@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2017/10/08 17:22:35 by pribault         ###   ########.fr       */
+/*   Updated: 2017/10/10 21:01:49 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,8 @@ int						destroy_client(t_client *client);
 int						start_client(t_client *client);
 int						stop_client(t_client *client);
 
-int						set_client_refresh_rate(t_client *client, size_t microseconds);
+int						set_client_refresh_rate(t_client *client,
+						size_t microseconds);
 int						set_client_timeout(t_client *client, size_t seconds);
 int						start_client_autocleaner(t_client *client);
 int						stop_client_autocleaner(t_client *client);
@@ -123,7 +124,8 @@ int						destroy_server(t_server *server);
 int						start_server(t_server *server);
 int						stop_server(t_server *server);
 
-int						set_server_refresh_rate(t_server *server, size_t microseconds);
+int						set_server_refresh_rate(t_server *server,
+						size_t microseconds);
 int						set_server_timeout(t_server *server, size_t seconds);
 int						start_server_autocleaner(t_server *server);
 int						stop_server_autocleaner(t_server *server);
