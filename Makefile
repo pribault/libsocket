@@ -1,46 +1,56 @@
 NAME = libsocket.a
-CC = gcc
-FLAGS = -Wall -Wextra -Ofast -fPIC
-SRC =	client/new.c client/destroy.c\
-		client/start.c client/stop.c\
-		client/receive.c client/send.c\
-		client/set_refresh_rate.c\
-		client/set_timeout.c\
-		client/start_autocleaner.c\
-		client/stop_autocleaner.c\
-		server/new.c server/destroy.c\
-		server/start.c server/stop.c\
-		server/receive.c server/send.c\
-		server/set_refresh_rate.c\
-		server/set_timeout.c\
-		server/start_autocleaner.c\
-		server/stop_autocleaner.c
+LIBSO = $(NAME:%.a=%.so)
+CC = clang
+CLIENT_SRC = new_client.c
+SERVER_SRC = new_server.c
+SRC =	$(CLIENT_SRC:%.c=client/%.c)\
+		$(SERVER_SRC:%.c=server/%.c)
+OBJ = $(SRC:%.c=obj/%.o)
+FLAGS = -Wall -Wextra
 INCLUDES =	libsocket.h
 INCLUDE = $(INCLUDES:%.h=include/%.h)
-OBJ = $(SRC:%.c=src/%.o)
 LIBFT = libft
 
-.PHONY: all clean fclean re
+.PHONY: clean fclean all re norme
 
 all: $(NAME)
 
-%.o: %.c $(INCLUDE)
-	@echo "\033[3m\033[38;5;87mcompiling $@\033[0m"
-	@$(CC) $(FLAGS) -I include -I $(LIBFT)/include -o $@ -c $<
+obj:
+	@mkdir obj
+
+obj/client: | obj
+	@mkdir obj/client
+
+obj/server: | obj
+	@mkdir obj/server
+
+obj/client/%.o: src/client/%.c $(INCLUDE) | obj/client
+	@$(CC) $(FLAGS) -fPIC -I include -I $(LIBFT)/include -o $@ -c $<
+	@echo "\033[0m🌶  \033[38;5;226m$@ done\033[0m"
+
+obj/server/%.o: src/server/%.c $(INCLUDE) | obj/server
+	@$(CC) $(FLAGS) -fPIC -I include -I $(LIBFT)/include -o $@ -c $<
+	@echo "\033[0m🌶  \033[38;5;226m$@ done\033[0m"
+
+$(LIBSO): $(OBJ)
+	@$(CC) $(FLAGS) -shared -o $(LIBSO) $(OBJ)
+	@echo "\033[0m🦁  \033[38;5;214m$@ done\033[0m"
 
 $(NAME): $(OBJ)
-	@echo "\033[4m\033[1m\033[38;5;23mcompiling $(NAME)\033[0m"
 	@ar rc $(NAME) $(OBJ)
+	@ranlib $(NAME)
+	@echo "\033[0m🐹  \033[38;5;214m$@ done\033[0m"
 
 clean:
-	@echo "\033[3m\033[38;5;46mremoving object files\033[0m"
-	@rm -f $(OBJ)
+	@rm -rf obj
+	@echo "\033[0m\033[38;5;45mobject files removed\033[0m"
 
 fclean: clean
-	@echo "\033[1m\033[38;5;22mremoving $(NAME)\033[0m"
 	@rm -f $(NAME)
-
-re: fclean all
+	@rm -f $(LIBSO)
+	@echo "\033[0m\033[38;5;87m$(NAME) and $(LIBSO) removed\033[0m"
 
 norme:
 	@norminette $(OBJ:%.o=%.c) $(INCLUDE)
+
+re: fclean all

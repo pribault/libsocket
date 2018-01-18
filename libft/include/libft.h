@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/03 16:13:23 by pribault          #+#    #+#             */
-/*   Updated: 2017/10/08 16:13:43 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/15 21:03:44 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,22 @@
 ** includes
 */
 
-# define ENABLE_REALLOC
-
+# include <sys/wait.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <string.h>
 # include <fcntl.h>
+# include <dirent.h>
 # include "ft_printf.h"
+# include "malloc.h"
 
 /*
 ** macros
 */
 
-# define VECTOR_SIZE	1024
-# define BUFF_SIZE 		32
-# define SIZE 			4096
-# define COS_MAX		30
+# define VECTOR_SIZE	4096
+# define BUFF_SIZE 		4096
+# define COS_MAX		4096
 
 /*
 ** structures
@@ -68,6 +68,7 @@ int					ft_atoi(char *str);
 int					ft_atoi_base(char *str, char *base);
 unsigned int		ft_atou(char *str);
 void				ft_bzero(void *s, size_t n);
+char				*ft_execute(char *file, char **arg, char **env);
 char				ft_get_all_lines(int fd, char **str);
 int					ft_get_next_line(int const fd, char **line);
 char				*ft_itoa(int n);
@@ -106,6 +107,7 @@ int					ft_isalnum(int c);
 int					ft_isalpha(int c);
 int					ft_isascii(int c);
 int					ft_isdigit(int c);
+int					ft_isnumeric(char *s);
 char				ft_isof(int c, char *str);
 int					ft_isprime(int n);
 int					ft_isprint(int c);
@@ -137,7 +139,6 @@ void				ft_memdump(void *ptr, size_t size);
 void				*ft_memdup(void *ptr, size_t size);
 void				*ft_memmove(void *dst, const void *src, size_t len);
 void				*ft_memset(void *b, int c, size_t len);
-void				ft_realloc(void **ptr, size_t prev_size, size_t new_size);
 
 /*
 **	array functions
@@ -146,6 +147,8 @@ void				ft_realloc(void **ptr, size_t prev_size, size_t new_size);
 void				**ft_alloc_array(size_t h, size_t w, size_t size);
 int					ft_arraylen(char **array);
 void				ft_free_array(void **array, size_t len);
+char				*ft_implode(char **array, char c);
+char				**ft_ls(char *name);
 
 /*
 **	list functions
@@ -154,10 +157,15 @@ void				ft_free_array(void **array, size_t len);
 void				ft_lstadd(t_list **alst, t_list *new);
 void				ft_lstdel(t_list **alst, void (*del)(void*, size_t));
 void				ft_lstdelone(t_list **alst, void (*del)(void*, size_t));
+t_list				*ft_lstget(t_list *head, size_t n);
 void				ft_lstiter(t_list *lst, void (*f)(t_list *elem));
+size_t				ft_lstlen(t_list *head);
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
+void				ft_lstmove(t_list **head, size_t from, size_t to);
 t_list				*ft_lstnew(void const *content, size_t content_size);
-void				ft_lstswap(t_list **lst1, t_list **lst2);
+void				ft_lstprint(t_list *head, void (*print)(void*));
+void				ft_lstput(t_list **head, t_list *new, size_t n);
+void				ft_lstsort(t_list *head, int (*sort)(void*, void*));
 
 /*
 **	vector functions
@@ -205,5 +213,6 @@ char				**ft_strsplit(char const *s, char c);
 char				*ft_strstr(const char *big, const char *little);
 char				*ft_strsub(char const *s, unsigned int start, size_t len);
 char				*ft_strtrim(char const *s);
+void				ft_swap(void **a, void **b);
 
 #endif

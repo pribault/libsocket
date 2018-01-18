@@ -1,23 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   set_refresh_rate.c                                 :+:      :+:    :+:   */
+/*   ft_lstprint.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/08 17:18:05 by pribault          #+#    #+#             */
-/*   Updated: 2017/10/08 17:20:17 by pribault         ###   ########.fr       */
+/*   Created: 2017/10/25 16:29:31 by pribault          #+#    #+#             */
+/*   Updated: 2017/10/25 16:54:13 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsocket.h"
+#include "libft.h"
 
-int		set_client_refresh_rate(t_client *client, size_t microseconds)
+void	ft_lstprint(t_list *head, void (*print)(void*))
 {
-	if (!client)
-		return (0);
-	pthread_mutex_lock(&client->autocleaner_mutex);
-	client->refresh = microseconds;
-	pthread_mutex_unlock(&client->autocleaner_mutex);
-	return (1);
+	ft_putchar('[');
+	while (head)
+	{
+		print(head->content);
+		head = head->next;
+		ft_putstr("] -> [");
+	}
+	ft_putendl("\033[0m\033[38;5;124mnull\033[0m]");
 }

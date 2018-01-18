@@ -1,29 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   receive.c                                          :+:      :+:    :+:   */
+/*   ft_malloc.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/07 13:59:40 by pribault          #+#    #+#             */
-/*   Updated: 2017/10/08 17:22:13 by pribault         ###   ########.fr       */
+/*   Created: 2017/07/07 09:58:00 by pribault          #+#    #+#             */
+/*   Updated: 2017/08/20 13:09:10 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsocket.h"
+#ifndef FT_MALLOC_H
+# define FT_MALLOC_H
 
-t_pack	*receive_client(t_client *client)
-{
-	t_pack	*ret;
-	size_t	size;
+# include <stdlib.h>
 
-	ret = NULL;
-	if (client && (size = client->waiting->n))
-	{
-		pthread_mutex_lock(&client->receiver_mutex);
-		ret = ft_vector_get(client->waiting, size - 1);
-		ft_vector_resize(client->waiting, size - 1);
-		pthread_mutex_unlock(&client->receiver_mutex);
-	}
-	return (ret);
-}
+void			*malloc(size_t size);
+void			*calloc(size_t nmemb, size_t size);
+void			*realloc(void *ptr, size_t size);
+void			free(void *ptr);
+
+void			show_alloc_mem(void);
+void			show_alloc_mem_ex(void);
+
+#endif

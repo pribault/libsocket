@@ -1,38 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_realloc.c                                       :+:      :+:    :+:   */
+/*   ft_ls.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/01 01:06:12 by pribault          #+#    #+#             */
-/*   Updated: 2017/09/01 01:14:50 by pribault         ###   ########.fr       */
+/*   Created: 2017/11/02 12:10:42 by pribault          #+#    #+#             */
+/*   Updated: 2017/11/02 12:26:16 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-#ifdef ENABLE_REALLOC
-
-void	ft_realloc(void **ptr, size_t prev_size, size_t new_size)
+char	**ft_ls(char *dir)
 {
-	if (!ptr)
-		return ;
-	*ptr = realloc(*ptr, new_size);
-	(void)prev_size;
+	char			**files;
+	struct dirent	*dirent;
+	DIR				*ptr;
+	size_t			i;
+
+	if (!(ptr = opendir(dir)) ||
+		!(files = (char**)malloc(sizeof(char*))))
+		return (NULL);
+	i = 0;
+	while ((dirent = readdir(ptr)))
+		if (!(files = (char**)realloc(files, sizeof(char*) * (i + 2))) ||
+			!(files[i++] = ft_strdup(dirent->d_name)))
+			return (NULL);
+	files[i] = NULL;
+	closedir(ptr);
+	return (files);
 }
-
-#else
-
-void	ft_realloc(void **ptr, size_t prev_size, size_t new_size)
-{
-	void	*new;
-
-	if (!ptr || !(new = malloc(new_size)))
-		return ;
-	ft_memcpy(new, *ptr, prev_size);
-	free(*ptr);
-	*ptr = new;
-}
-
-#endif

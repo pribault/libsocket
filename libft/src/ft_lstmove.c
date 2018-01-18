@@ -1,24 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   stop_autocleaner.c                                 :+:      :+:    :+:   */
+/*   ft_lstmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/08 11:33:10 by pribault          #+#    #+#             */
-/*   Updated: 2017/10/08 17:17:11 by pribault         ###   ########.fr       */
+/*   Created: 2017/10/25 17:26:32 by pribault          #+#    #+#             */
+/*   Updated: 2017/10/29 12:03:55 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsocket.h"
+#include "libft.h"
 
-int		stop_server_autocleaner(t_server *server)
+void	ft_lstmove(t_list **head, size_t from, size_t to)
 {
-	if (!server || !(server->running & AUTOCLEANER))
-		return (0);
-	pthread_mutex_lock(&server->autocleaner_mutex);
-	pthread_cancel(server->autocleaner);
-	pthread_mutex_unlock(&server->autocleaner_mutex);
-	server->running -= AUTOCLEANER;
-	return (1);
+	t_list	*list;
+	t_list	*ptr;
+
+	if (!head)
+		return ;
+	if (from)
+	{
+		if (!(list = ft_lstget(*head, from - 1)) ||
+			!(ptr = list->next))
+			return ;
+		list->next = ptr->next;
+	}
+	else
+	{
+		ptr = *head;
+		*head = ptr->next;
+	}
+	ft_lstput(head, ptr, to);
 }

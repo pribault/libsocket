@@ -1,29 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   receive.c                                          :+:      :+:    :+:   */
+/*   ft_execute.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/07 13:59:45 by pribault          #+#    #+#             */
-/*   Updated: 2017/10/08 14:17:27 by pribault         ###   ########.fr       */
+/*   Created: 2018/01/15 20:52:30 by pribault          #+#    #+#             */
+/*   Updated: 2018/01/15 21:36:07 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsocket.h"
+#include "libft.h"
 
-t_pack		*receive_server(t_server *server)
+char	*ft_execute(char *file, char **arg, char **env)
 {
-	t_pack	*ret;
-	size_t	size;
+	int		fd[2];
+	char	*s;
+	pid_t	pid;
+	int		ret;
 
-	ret = NULL;
-	if (server && (size = server->waiting->n))
+	s = NULL;
+	if (!arg || ! env || ! file || pipe(fd) < 0 || (pid = fork()) < 0)
+		return (NULL);
+	if (!pid)
 	{
-		pthread_mutex_lock(&server->receiver_mutex);
-		ret = ft_vector_get(server->waiting, 0);
-		ft_vector_del_one(server->waiting, 0);
-		pthread_mutex_unlock(&server->receiver_mutex);
+		dup2(fd[1], 1);
+		if (execve(file, arg, env) < 0)
+			exit(1);
 	}
-	return (ret);
+	else
+		wait4(pid, &ret, 0, NULL);
+	close(fd[1]);
+	ft_get_all_lines(fd[0], &s);
+	close(fd[0]);
+	return (s);
 }

@@ -1,26 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   destroy.c                                          :+:      :+:    :+:   */
+/*   ft_lstsort.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/07 12:12:42 by pribault          #+#    #+#             */
-/*   Updated: 2017/10/10 21:39:22 by pribault         ###   ########.fr       */
+/*   Created: 2017/10/23 20:24:06 by pribault          #+#    #+#             */
+/*   Updated: 2017/10/29 12:47:57 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsocket.h"
+#include "libft.h"
 
-int		destroy_server(t_server *server)
+void		ft_lstsort(t_list *head, int (*sort)(void*, void*))
 {
-	if (!server || close(server->sockfd) == -1)
-		return (0);
-	stop_server(server);
-	ft_vector_del(&server->waiting);
-	ft_vector_del(&server->clients);
-	pthread_mutex_destroy(&server->receiver_mutex);
-	pthread_mutex_destroy(&server->autocleaner_mutex);
-	free(server);
-	return (1);
+	t_list	*list;
+	int		stop;
+
+	if (!head || !sort)
+		return ;
+	stop = 1;
+	while (stop)
+	{
+		list = head;
+		stop = 0;
+		while (list->next)
+		{
+			if (sort(list->content, list->next->content) > 0)
+			{
+				ft_swap(&list->content, &list->next->content);
+				stop = 1;
+			}
+			list = list->next;
+		}
+	}
 }

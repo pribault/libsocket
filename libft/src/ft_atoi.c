@@ -46,7 +46,7 @@ int		ft_atoi_base(char *str, char *base)
 		i++;
 	if (str[i] == '+' || str[i] == '-')
 		negative = 44 - str[i++];
-	while ((c = ft_strchr(base, str[i++])) && ft_strncmp(c, "\0", 1))
+	while (str[i] && (c = ft_strchr(base, str[i++])))
 		number = number * len + c - base;
 	return (number * negative);
 }

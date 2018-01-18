@@ -1,32 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_vector_new.c                                    :+:      :+:    :+:   */
+/*   ft_implode.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/08/31 23:37:46 by pribault          #+#    #+#             */
-/*   Updated: 2017/10/18 18:47:51 by pribault         ###   ########.fr       */
+/*   Created: 2018/01/15 20:22:33 by pribault          #+#    #+#             */
+/*   Updated: 2018/01/15 20:31:03 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_vector	*ft_vector_new(size_t type, size_t n)
+char	*ft_implode(char **array, char c)
 {
-	t_vector	*new;
+	size_t	size;
+	size_t	i;
+	char	*s;
 
-	if (!(new = (t_vector*)malloc(sizeof(t_vector))))
+	if (!array)
 		return (NULL);
-	new->n = n;
-	new->type = type;
-	new->size = VECTOR_SIZE * ((type * n - 1) / VECTOR_SIZE) +
-	VECTOR_SIZE;
-	if (!(new->ptr = malloc(new->size)))
+	size = 0;
+	i = (size_t)-1;
+	while (array[++i])
+		size += ft_strlen(array[i]);
+	if (!size)
+		return (ft_strdup(""));
+	if (!(s = malloc(sizeof(char) * (size + ft_arraylen(array)))))
+		return (NULL);
+	size = 0;
+	i = (size_t)-1;
+	while (array[++i])
 	{
-		free(new);
-		return (NULL);
+		ft_memcpy(s + size + i, array[i], ft_strlen(array[i]));
+		size += ft_strlen(array[i]);
+		s[size + i] = c;
 	}
-	ft_bzero(new->ptr, new->size);
-	return (new);
+	s[size + i - 1] = '\0';
+	return (s);
 }

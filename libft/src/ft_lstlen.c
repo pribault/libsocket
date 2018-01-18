@@ -1,22 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstswap.c                                       :+:      :+:    :+:   */
+/*   ft_lstlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pribault <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/10 16:56:14 by pribault          #+#    #+#             */
-/*   Updated: 2016/11/10 17:03:25 by pribault         ###   ########.fr       */
+/*   Created: 2017/10/23 20:33:38 by pribault          #+#    #+#             */
+/*   Updated: 2017/10/23 20:34:42 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_lstswap(t_list **lst1, t_list **lst2)
+size_t	ft_lstlen(t_list *head)
 {
-	t_list	*temp;
+	size_t	i;
 
-	temp = *lst1;
-	*lst1 = *lst2;
-	*lst2 = temp;
+	i = 0;
+	while (head)
+	{
+		i++;
+		head = head->next;
+	}
+	return (i);
 }
