@@ -2,7 +2,7 @@ NAME = libsocket.a
 LIBSO = $(NAME:%.a=%.so)
 CC = clang
 CLIENT_SRC = new_client.c
-SERVER_SRC = new_server.c
+SERVER_SRC = new_server.c start_server.c stop_server.c
 SRC =	$(CLIENT_SRC:%.c=client/%.c)\
 		$(SERVER_SRC:%.c=server/%.c)
 OBJ = $(SRC:%.c=obj/%.o)
