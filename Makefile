@@ -1,13 +1,14 @@
 NAME = libsocket.a
 LIBSO = $(NAME:%.a=%.so)
 CC = clang
-CLIENT_SRC = new_client.c
-SERVER_SRC = new_server.c start_server.c stop_server.c
+CLIENT_SRC = client_new.c
+SERVER_SRC =	server_new.c server_delete.c\
+				server_start.c server_stop.c
 SRC =	$(CLIENT_SRC:%.c=client/%.c)\
 		$(SERVER_SRC:%.c=server/%.c)
 OBJ = $(SRC:%.c=obj/%.o)
 FLAGS = -Wall -Wextra
-INCLUDES =	libsocket.h
+INCLUDES =	libsocket.h client.h server.h
 INCLUDE = $(INCLUDES:%.h=include/%.h)
 LIBFT = libft
 

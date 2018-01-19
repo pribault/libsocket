@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   start_server.c                                     :+:      :+:    :+:   */
+/*   server_start.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 21:06:13 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/18 21:39:03 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/18 23:04:18 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsocket.h"
+#include "server.h"
 
-int		start_server_tcp(t_server *server)
+int		server_start_tcp(t_server *server)
 {
 	if (listen(server->sockfd, server->queue_max) < 0)
 		return (0);
@@ -20,13 +20,13 @@ int		start_server_tcp(t_server *server)
 	return (1);
 }
 
-int		start_server_udp(t_server *server)
+int		server_start_udp(t_server *server)
 {
 	server->opt |= SERVER_RUNNING;
 	return (1);
 }
 
-int		start_server(t_server *server)
+int		server_start(t_server *server)
 {
 	struct sockaddr_in	addr;
 	int					n;
@@ -43,9 +43,9 @@ int		start_server(t_server *server)
 		bind(server->sockfd, (void*)&addr, sizeof(struct sockaddr_in)) < 0)
 		return (0);
 	if (server->protocol == TCP)
-		return (start_server_tcp(server));
+		return (server_start_tcp(server));
 	else if (server->protocol == UDP)
-		return (start_server_udp(server));
+		return (server_start_udp(server));
 	else
 		return (0);
 }

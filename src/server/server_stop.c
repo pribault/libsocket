@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   stop_server.c                                      :+:      :+:    :+:   */
+/*   server_stop.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 21:20:08 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/18 21:45:33 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 08:39:09 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libsocket.h"
+#include "server.h"
 
-int		stop_server(t_server *server)
+void	server_stop(t_server *server)
 {
-	t_server_client	*client;
-	t_towrite		*towrite;
-	size_t			i;
+	t_client	*client;
+	t_towrite	*towrite;
+	size_t		i;
 
 	if (!server)
-		return (0);
+		return ;
 	server->opt &= ~SERVER_RUNNING;
 	i = (size_t)-1;
 	while (++i < server->write_queue->n)
@@ -32,5 +32,5 @@ int		stop_server(t_server *server)
 			close(client->fd);
 	ft_vector_resize(server->clients, 0);
 	close(server->sockfd);
-	return (1);
+	return ;
 }

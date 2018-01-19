@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libsocket.h                                        :+:      :+:    :+:   */
+/*   client.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/18 23:14:31 by pribault         ###   ########.fr       */
+/*   Created: 2018/01/18 22:51:55 by pribault          #+#    #+#             */
+/*   Updated: 2018/01/18 23:46:23 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBSOCKET_H
-# define LIBSOCKET_H
+#ifndef CLIENT_H
+# define CLIENT_H
 
 /*
 ****************
@@ -20,42 +20,42 @@
 */
 
 # include <sys/socket.h>
-# include <unistd.h>
+# include "libft.h"
 
 /*
 *************
-**	types  **
+**	enums  **
 *************
 */
 
-/*
-**	enums
-*/
-
-typedef enum	e_protocol
+typedef enum		e_protocol
 {
 	TCP = SOCK_STREAM,
 	UDP = SOCK_DGRAM
-}				t_protocol;
-
-typedef void	*t_client;
-typedef void	*t_server;
+}					t_protocol;
 
 /*
-************************
-**	client functions  **
-************************
+******************
+**	structures  **
+******************
 */
 
-t_client				*client_new(t_protocol protocol,
-						char *address, char *port);
+typedef struct		s_client
+{
+	t_protocol		protocol;
+	int				sockfd;
+	struct timeval	timeout;
+	t_vector		*write_queue;
+	uint8_t			opt;
+}					t_client;
 
 /*
-************************
-**	server functions  **
-************************
+*****************
+**	functions  **
+*****************
 */
 
-t_server				*server_new(t_protocol protocol, char *port);
+t_client			*client_new(t_protocol protocol, char *address,
+					char *port);
 
 #endif
