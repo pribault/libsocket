@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 21:20:08 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 08:39:09 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 10:30:00 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	server_stop(t_server *server)
 	i = (size_t)-1;
 	while (++i < server->write_queue->n)
 		if ((towrite = ft_vector_get(server->write_queue, i)))
-			free(towrite->data);
+			free(towrite->data.ptr);
 	ft_vector_resize(server->write_queue, 0);
 	i = (size_t)-1;
 	while (++i < server->clients->n)
