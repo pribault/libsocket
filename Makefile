@@ -9,7 +9,10 @@ SERVER_SRC =	server_new.c server_delete.c\
 				server_set_callback.c\
 				server_poll_events.c\
 				server_add_clients_to_set.c\
-				server_add_write_request_to_set.c
+				server_add_write_request_to_set.c\
+				server_add_incoming_client.c\
+				server_manage_incoming_messages.c\
+				server_manage_write_requests.c
 SRC =	$(CLIENT_SRC:%.c=client/%.c)\
 		$(SERVER_SRC:%.c=server/%.c)
 OBJ = $(SRC:%.c=obj/%.o)

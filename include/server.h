@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 12:58:31 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 17:23:52 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,5 +131,10 @@ void				server_add_clients_to_set(fd_set *set,
 					t_vector *clients, int *fd_max);
 void				server_add_write_request_to_set(fd_set *set,
 					t_vector *write_queue, int *fd_max);
+void				server_add_incoming_client(t_server *server, int *n_evts);
+void				server_manage_incoming_messages(t_server *server,
+					fd_set *set, int *n_evts);
+void				server_manage_write_requests(t_server *server,
+					fd_set *set, int *n_evts);
 
 #endif
