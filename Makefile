@@ -12,7 +12,8 @@ SERVER_SRC =	server_new.c server_delete.c\
 				server_add_write_request_to_set.c\
 				server_add_incoming_client.c\
 				server_manage_incoming_messages.c\
-				server_manage_write_requests.c
+				server_manage_write_requests.c\
+				server_remove_client.c
 SRC =	$(CLIENT_SRC:%.c=client/%.c)\
 		$(SERVER_SRC:%.c=server/%.c)
 OBJ = $(SRC:%.c=obj/%.o)

@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 12:57:27 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 21:52:50 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,31 @@ typedef enum	e_protocol
 	TCP = SOCK_STREAM,
 	UDP = SOCK_DGRAM
 }				t_protocol;
+
+typedef enum	e_callback
+{
+	CLIENT_ADD_CB,
+	CLIENT_DEL_CB,
+	MSG_RECV_CB,
+	MSG_SEND_CB,
+	CLIENT_EXCEPTION_CB,
+	SERVER_EXCEPTION_CB,
+	CALLBACK_MAX
+}				t_callback;
+
+/*
+**	structures
+*/
+
+typedef struct	s_msg
+{
+	void		*ptr;
+	size_t		size;
+}				t_msg;
+
+/*
+**	others
+*/
 
 typedef void	*t_client;
 typedef void	*t_server;

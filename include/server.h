@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 19:08:11 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 21:21:46 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 **	defines  **
 ***************
 */
+
+# define READ_BUFFER_SIZE		65536
 
 /*
 **	default server values
@@ -90,6 +92,9 @@ typedef struct		s_client
 	struct sockaddr	addr;
 	socklen_t		addr_len;
 	struct timeval	last;
+	void			*data;
+	size_t			size;
+	size_t			expected;
 }					t_client;
 
 typedef struct		s_server
@@ -131,6 +136,7 @@ void				*server_get_data(t_server *server);
 void				server_set_callback(t_server *server, t_callback cb,
 					void *ptr);
 int					server_poll_events(t_server *server);
+void				server_remove_client(t_server *server, t_client *client);
 
 /*
 **	private functions, used for internal management

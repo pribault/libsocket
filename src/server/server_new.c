@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 20:56:42 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 09:01:01 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 21:42:22 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,10 @@ t_server	*server_new(void)
 {
 	t_server	*server;
 
-	if (!(server = (t_server*)malloc(sizeof(t_server))) ||
-		!(server->clients = ft_vector_new(sizeof(t_client), 0)) ||
+	if (!(server = (t_server*)malloc(sizeof(t_server))))
+		return (NULL);
+	ft_bzero(server, sizeof(t_server));
+	if (!(server->clients = ft_vector_new(sizeof(t_client), 0)) ||
 		!(server->write_queue = ft_vector_new(sizeof(t_towrite), 0)))
 	{
 		if (server && server->clients)
@@ -26,7 +28,6 @@ t_server	*server_new(void)
 			free(server);
 		return (NULL);
 	}
-	ft_bzero(server, sizeof(t_server));
 	server->queue_max = SERVER_DEFAULT_QUEUE_MAX;
 	server->timeout = (struct timeval){SERVER_DEFAULT_TIMEOUT_S,
 	SERVER_DEFAULT_TIMEOUT_US};

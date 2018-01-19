@@ -1,33 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_add_clients_to_set.c                        :+:      :+:    :+:   */
+/*   server_remove_client.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/19 11:46:21 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 21:42:34 by pribault         ###   ########.fr       */
+/*   Created: 2018/01/19 19:22:39 by pribault          #+#    #+#             */
+/*   Updated: 2018/01/19 21:49:11 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
 
-void	server_add_clients_to_set(fd_set *set, t_vector *clients,
-		int *fd_max)
+void	server_remove_client(t_server *server, t_client *client)
 {
-	t_client	*client;
-	size_t		i;
+	t_vector	*vector;
 
-	if (!set || !clients || !fd_max)
+	if (!server || !(vector = server->clients) || !client)
 		return ;
-	i = (size_t)clients->n;
-	while (--i != (size_t)-1)
-	{
-		if ((client = ft_vector_get(clients, i)))
-		{
-			if (client->fd > *fd_max)
-				*fd_max = client->fd;
-			FD_SET(client->fd, set);
-		}
-	}
+	if (server->client_del)
+		server->client_del(server, client);
+	if ((void*)client >= vector->ptr &&
+		(void*)client < vector->ptr + vector->size)
+		ft_vector_del_one(vector, ((void*)client - vector->ptr) /
+		vector->type);
 }

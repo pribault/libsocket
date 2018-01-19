@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/19 10:31:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 17:19:45 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 21:45:42 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,11 @@ int		server_poll_events(t_server *server)
 	FD_ZERO(&input);
 	FD_ZERO(&output);
 	FD_SET(server->sockfd, &input);
-	fd_max = -1;
+	fd_max = server->sockfd;
 	server_add_clients_to_set(&input, server->clients, &fd_max);
 	server_add_write_request_to_set(&output, server->write_queue, &fd_max);
-	if ((ret = select(fd_max, &input, &output, NULL, &server->timeout)) < 0)
+	if ((ret = select(fd_max + 1, &input, &output, NULL,
+		&server->timeout)) < 0)
 		return (0);
 	if (!ret)
 		return (1);
