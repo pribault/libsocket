@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/19 12:50:09 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 12:59:52 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 22:20:24 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ void	server_add_write_request_to_set(fd_set *set, t_vector *write_queue,
 	{
 		if ((towrite = ft_vector_get(write_queue, i)))
 		{
-			if (towrite->fd > *fd_max)
-				*fd_max = towrite->fd;
-			FD_SET(towrite->fd, set);
+			if (towrite->client.fd > *fd_max)
+				*fd_max = towrite->client.fd;
+			FD_SET(towrite->client.fd, set);
 		}
 	}
 }

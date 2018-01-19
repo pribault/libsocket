@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 21:21:46 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 22:45:46 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,12 +80,6 @@ typedef struct		s_msg
 	size_t			size;
 }					t_msg;
 
-typedef struct		s_towrite
-{
-	int				fd;
-	t_msg			data;
-}					t_towrite;
-
 typedef struct		s_client
 {
 	int				fd;
@@ -96,6 +90,12 @@ typedef struct		s_client
 	size_t			size;
 	size_t			expected;
 }					t_client;
+
+typedef struct		s_towrite
+{
+	t_client		client;
+	t_msg			data;
+}					t_towrite;
 
 typedef struct		s_server
 {
@@ -137,11 +137,14 @@ void				server_set_callback(t_server *server, t_callback cb,
 					void *ptr);
 int					server_poll_events(t_server *server);
 void				server_remove_client(t_server *server, t_client *client);
+int					server_get_client_fd(t_client *client);
 
 /*
 **	private functions, used for internal management
 */
 
+void				server_get_client_message(t_server *server,
+					t_client *client, void *data, size_t size);
 void				server_add_clients_to_set(fd_set *set,
 					t_vector *clients, int *fd_max);
 void				server_add_write_request_to_set(fd_set *set,

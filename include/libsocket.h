@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 21:52:50 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 22:33:12 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,11 @@ typedef struct	s_msg
 **	others
 */
 
+/*
+**	warning, t_client is different
+**	between client and server functions 
+*/
+
 typedef void	*t_client;
 typedef void	*t_server;
 
@@ -91,5 +96,6 @@ void					*server_get_data(t_server *server);
 void					server_set_callback(t_server *server, t_callback cb,
 						void *ptr);
 int						server_poll_events(t_server *server);
+int						server_get_client_fd(t_client *client);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/19 17:18:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 21:55:26 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 23:02:13 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@ static void	server_complete_msg(t_server *server, t_client *client,
 {
 	static t_msg	msg;
 
-	if (!server || !client || !buffer || !size)
-		return ;
 	if (client->size + size < client->expected)
 	{
 		if (!(client->data = realloc(client->data, client->size + size)))
@@ -37,8 +35,8 @@ static void	server_complete_msg(t_server *server, t_client *client,
 		if (server->msg_recv)
 			server->msg_recv(server, client, &msg);
 		ft_memdel((void**)&client->data);
-		client->size = 0;
-		client->expected = 0;
+		server_get_client_message(server, client, buffer + client->expected -
+		client->size, size + client->size - client->expected);
 	}
 }
 
@@ -47,15 +45,13 @@ static void	server_get_msg(t_server *server, t_client *client,
 {
 	static t_msg	msg;
 
-	if (!server || !client || !buffer || !size)
-		return ;
 	if (*(size_t*)buffer + sizeof(size_t) <= size)
 	{
 		msg.ptr = buffer + sizeof(size_t);
 		msg.size = *(size_t*)buffer;
 		if (server->msg_recv)
 			server->msg_recv(server, client, &msg);
-		server_get_msg(server, client, msg.ptr + msg.size,
+		server_get_client_message(server, client, msg.ptr + msg.size,
 		size - (msg.size + sizeof(size_t)));
 	}
 	else
@@ -67,28 +63,24 @@ static void	server_get_msg(t_server *server, t_client *client,
 	}
 }
 
-static void	server_get_client_message(t_server *server, t_client *client)
+void		server_get_client_message(t_server *server, t_client *client,
+			void *data, size_t size)
 {
-	static char	buffer[READ_BUFFER_SIZE];
-	int			ret;
-
-	if (!server || !client)
+	if (!size)
 		return ;
-	if ((ret = read(client->fd, &buffer, READ_BUFFER_SIZE)) < 0)
-		return ;
-	if (!ret)
-		server_remove_client(server, client);
 	if (client->data)
-		server_complete_msg(server, client, &buffer, ret);
-	else if ((size_t)ret >= sizeof(size_t))
-		server_get_msg(server, client, &buffer, ret);
+		server_complete_msg(server, client, data, size);
+	else if ((size_t)size >= sizeof(size_t))
+		server_get_msg(server, client, data, size);
 }
 
 void		server_manage_incoming_messages(t_server *server, fd_set *set,
 			int *n_evts)
 {
+	static char	buffer[READ_BUFFER_SIZE];
 	t_vector	*vector;
 	t_client	*client;
+	int			ret;
 	size_t		i;
 
 	if (!server || !set || !n_evts || (*n_evts) < 1 ||
@@ -100,7 +92,11 @@ void		server_manage_incoming_messages(t_server *server, fd_set *set,
 		if ((client = ft_vector_get(vector, i)) &&
 			FD_ISSET(client->fd, set))
 		{
-			server_get_client_message(server, client);
+			if ((ret = read(client->fd, &buffer, READ_BUFFER_SIZE)) > 0)
+				server_get_client_message(server, client, (void*)&buffer, ret);
+			else if (!ret)
+				server_remove_client(server, client);
+			ft_vector_del_one(vector, i);
 			(*n_evts)--;
 		}
 	}
