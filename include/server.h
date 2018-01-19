@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 10:32:57 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 12:58:31 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ typedef struct		s_server
 	t_vector		*write_queue;
 	uint16_t		port;
 	uint8_t			opt;
+	void			*data;
 	void			(*client_add)(struct s_server*, t_client*);
 	void			(*client_del)(struct s_server*, t_client*);
 	void			(*msg_recv)(struct s_server*, t_client*, t_msg*);
@@ -121,8 +122,14 @@ void				server_delete(t_server **server);
 int					server_start(t_server *server, t_protocol protocol,
 					char *port);
 void				server_stop(t_server *server);
+void				server_attach_data(t_server *server, void *data);
+void				*server_get_data(t_server *server);
 void				server_set_callback(t_server *server, t_callback cb,
 					void *ptr);
-void				server_poll_events(t_server *server);
+int					server_poll_events(t_server *server);
+void				server_add_clients_to_set(fd_set *set,
+					t_vector *clients, int *fd_max);
+void				server_add_write_request_to_set(fd_set *set,
+					t_vector *write_queue, int *fd_max);
 
 #endif

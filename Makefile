@@ -4,8 +4,12 @@ CC = clang
 CLIENT_SRC = client_new.c
 SERVER_SRC =	server_new.c server_delete.c\
 				server_start.c server_stop.c\
+				server_attach_data.c\
+				server_get_data.c\
 				server_set_callback.c\
-				server_poll_events.c
+				server_poll_events.c\
+				server_add_clients_to_set.c\
+				server_add_write_request_to_set.c
 SRC =	$(CLIENT_SRC:%.c=client/%.c)\
 		$(SERVER_SRC:%.c=server/%.c)
 OBJ = $(SRC:%.c=obj/%.o)
