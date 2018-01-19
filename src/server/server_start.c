@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 21:06:13 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/18 23:04:18 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 09:01:59 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,20 @@ int		server_start_udp(t_server *server)
 	return (1);
 }
 
-int		server_start(t_server *server)
+int		server_start(t_server *server, t_protocol protocol, char *port)
 {
 	struct sockaddr_in	addr;
 	int					n;
 
 	if (!server)
 		return (0);
+	server->protocol = protocol;
+	server->port = ft_atou(port);
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(server->port);
 	addr.sin_addr.s_addr = INADDR_ANY;
 	n = 1;
-	if ((server->sockfd = socket(AF_INET, server->protocol, 0)) < 0 ||
+	if ((server->sockfd = socket(AF_INET, protocol, 0)) < 0 ||
 		setsockopt(server->sockfd, SOL_SOCKET, SO_REUSEADDR, &n,
 		sizeof(int)) < 0 ||
 		bind(server->sockfd, (void*)&addr, sizeof(struct sockaddr_in)) < 0)

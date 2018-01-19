@@ -6,13 +6,13 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 20:56:42 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/18 23:01:15 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 09:01:01 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
 
-t_server	*server_new(t_protocol protocol, char *port)
+t_server	*server_new(void)
 {
 	t_server	*server;
 
@@ -27,8 +27,6 @@ t_server	*server_new(t_protocol protocol, char *port)
 		return (NULL);
 	}
 	ft_bzero(server, sizeof(t_server));
-	server->protocol = protocol;
-	server->port = ft_atou(port);
 	server->queue_max = SERVER_DEFAULT_QUEUE_MAX;
 	server->timeout = (struct timeval){SERVER_DEFAULT_TIMEOUT_S,
 	SERVER_DEFAULT_TIMEOUT_US};

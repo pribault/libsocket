@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/18 23:14:31 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 09:02:24 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,10 @@ t_client				*client_new(t_protocol protocol,
 ************************
 */
 
-t_server				*server_new(t_protocol protocol, char *port);
+t_server				*server_new(void);
+void					server_delete(t_server **server);
+int						server_start(t_server *server, t_protocol protocol,
+						char *port);
+void					server_stop(t_server *server);
 
 #endif
