@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 17:23:52 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/19 19:08:11 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,10 @@ typedef struct		s_server
 *****************
 */
 
+/*
+**	public functions
+*/
+
 t_server			*server_new(void);
 void				server_delete(t_server **server);
 int					server_start(t_server *server, t_protocol protocol,
@@ -127,6 +131,11 @@ void				*server_get_data(t_server *server);
 void				server_set_callback(t_server *server, t_callback cb,
 					void *ptr);
 int					server_poll_events(t_server *server);
+
+/*
+**	private functions, used for internal management
+*/
+
 void				server_add_clients_to_set(fd_set *set,
 					t_vector *clients, int *fd_max);
 void				server_add_write_request_to_set(fd_set *set,
