@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 21:20:08 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 10:30:00 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/20 14:06:22 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	server_stop(t_server *server)
 	t_towrite	*towrite;
 	size_t		i;
 
-	if (!server)
+	if (!server || !(server->opt & SERVER_RUNNING))
 		return ;
 	server->opt &= ~SERVER_RUNNING;
 	i = (size_t)-1;

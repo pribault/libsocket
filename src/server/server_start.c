@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 21:06:13 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 09:01:59 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/20 14:06:02 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int		server_start(t_server *server, t_protocol protocol, char *port)
 	struct sockaddr_in	addr;
 	int					n;
 
-	if (!server)
+	if (!server || (server->opt & SERVER_RUNNING))
 		return (0);
 	server->protocol = protocol;
 	server->port = ft_atou(port);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.c                                             :+:      :+:    :+:   */
+/*   basic_server.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/19 21:23:23 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/20 10:09:32 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/20 14:22:28 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	client_add(t_server *server, t_client *client)
 	t_msg	msg;
 
 	(void)server;
-	msg.ptr = ft_joinf("client [%d] added\n", server_get_client_fd(client));
+	msg.ptr = ft_joinf("client [%s] added\n", server_get_client_address(client));
 	msg.size = ft_strlen(msg.ptr);
 	server_enqueue_write_by_fd(server, 1, &msg);
 }
@@ -28,7 +28,7 @@ void	client_del(t_server *server, t_client *client)
 	t_msg	msg;
 
 	(void)server;
-	msg.ptr = ft_joinf("client [%d] deleted\n", server_get_client_fd(client));
+	msg.ptr = ft_joinf("client [%s] deleted\n", server_get_client_address(client));
 	msg.size = ft_strlen(msg.ptr);
 	server_enqueue_write_by_fd(server, 1, &msg);
 }
@@ -38,8 +38,9 @@ void	msg_recv(t_server *server, t_client *client, t_msg *msg)
 	t_msg	new_msg;
 
 	(void)server;
-	new_msg.ptr = ft_joinf("message received from [%d]:\n",
-	server_get_client_fd(client));
+	(void)msg;
+	new_msg.ptr = ft_joinf("message received from [%s]:\n",
+	server_get_client_address(client));
 	new_msg.size = ft_strlen(new_msg.ptr);
 	server_enqueue_write_by_fd(server, 1, &new_msg);
 }
@@ -49,9 +50,10 @@ void	msg_send(t_server *server, t_client *client, t_msg *msg)
 	t_msg	new_msg;
 
 	(void)server;
+	(void)msg;
 	if (server_get_client_fd(client) <= 1)
 		return ;
-	new_msg.ptr = ft_joinf("message sended to [%d]:\n", server_get_client_fd(client));
+	new_msg.ptr = ft_joinf("message sended to [%s]:\n", server_get_client_address(client));
 	new_msg.size = ft_strlen(new_msg.ptr);
 	server_enqueue_write_by_fd(server, 1, &new_msg);
 }

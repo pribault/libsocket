@@ -17,7 +17,12 @@ SERVER_SRC =	server_new.c server_delete.c\
 				server_get_client_fd.c\
 				server_enqueue_write.c\
 				server_enqueue_write_by_fd.c\
-				server_add_client_by_fd.c
+				server_add_client_by_fd.c\
+				server_get_client_address.c\
+				server_client_attach_data.c\
+				server_client_get_data.c\
+				server_set_queue_max.c\
+				server_get_queue_max.c
 SRC =	$(CLIENT_SRC:%.c=client/%.c)\
 		$(SERVER_SRC:%.c=server/%.c)
 OBJ = $(SRC:%.c=obj/%.o)

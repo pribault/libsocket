@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:55 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/18 23:46:23 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/20 14:13:52 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,28 @@
 
 # include <sys/socket.h>
 # include "libft.h"
+
+/*
+***************
+**	defines  **
+***************
+*/
+
+# define READ_BUFFER_SIZE		65536
+
+/*
+**	default client values
+*/
+
+# define CLIENT_DEFAULT_QUEUE_MAX	10
+# define CLIENT_DEFAULT_TIMEOUT_S	1
+# define CLIENT_DEFAULT_TIMEOUT_US	0
+
+/*
+**	client opt's masks
+*/
+
+# define CLIENT_RUNNING		0x1
 
 /*
 *************
@@ -40,6 +62,18 @@ typedef enum		e_protocol
 ******************
 */
 
+typedef struct		s_msg
+{
+	void			*ptr;
+	size_t			size;
+}					t_msg;
+
+typedef struct		s_towrite
+{
+	int				fd;
+	t_msg			data;
+}					t_towrite;
+
 typedef struct		s_client
 {
 	t_protocol		protocol;
@@ -55,7 +89,6 @@ typedef struct		s_client
 *****************
 */
 
-t_client			*client_new(t_protocol protocol, char *address,
-					char *port);
+t_client			*client_new(void);
 
 #endif
