@@ -63,9 +63,13 @@ clean:
 fclean: clean
 	@rm -f $(NAME)
 	@rm -f $(LIBSO)
+	@make -f test.Makefile fclean
 	@echo "\033[0m\033[38;5;87m$(NAME) and $(LIBSO) removed\033[0m"
 
 norme:
 	@norminette $(OBJ:%.o=%.c) $(INCLUDE)
+
+test: $(NAME)
+	@make -f test.Makefile
 
 re: fclean all
