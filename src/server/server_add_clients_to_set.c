@@ -6,14 +6,14 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/19 11:46:21 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 21:42:34 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/20 17:44:35 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
 
-void	server_add_clients_to_set(fd_set *set, t_vector *clients,
-		int *fd_max)
+void	server_add_clients_to_set(fd_set *set, fd_set *err_set,
+		t_vector *clients, int *fd_max)
 {
 	t_client	*client;
 	size_t		i;
@@ -28,6 +28,7 @@ void	server_add_clients_to_set(fd_set *set, t_vector *clients,
 			if (client->fd > *fd_max)
 				*fd_max = client->fd;
 			FD_SET(client->fd, set);
+			FD_SET(client->fd, err_set);
 		}
 	}
 }

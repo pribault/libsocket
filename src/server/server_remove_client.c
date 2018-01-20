@@ -6,13 +6,31 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/19 19:22:39 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 21:49:11 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/20 17:36:17 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
 
-void	server_remove_client(t_server *server, t_client *client)
+static void	server_remove_client_by_fd(t_vector *vector,
+			t_client *client)
+{
+	t_client	*tmp;
+	size_t		i;
+
+	i = vector->n;
+	while (--i != (size_t)-1)
+	{
+		if ((tmp = ft_vector_get(vector, i)) &&
+			tmp->fd == client->fd)
+		{
+			ft_vector_del_one(vector, i);
+			return ;
+		}
+	}
+}
+
+void		server_remove_client(t_server *server, t_client *client)
 {
 	t_vector	*vector;
 
@@ -20,8 +38,12 @@ void	server_remove_client(t_server *server, t_client *client)
 		return ;
 	if (server->client_del)
 		server->client_del(server, client);
+	close(client->fd);
 	if ((void*)client >= vector->ptr &&
 		(void*)client < vector->ptr + vector->size)
 		ft_vector_del_one(vector, ((void*)client - vector->ptr) /
 		vector->type);
+	else
+		server_remove_client_by_fd(vector, client);
+	ft_printf("vector->n=%d\n", vector->n);
 }
