@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/20 09:37:58 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/20 10:01:48 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,6 @@ typedef struct		s_client
 	struct sockaddr	addr;
 	socklen_t		addr_len;
 	struct timeval	last;
-	void			*data;
-	size_t			size;
-	size_t			expected;
 }					t_client;
 
 typedef struct		s_towrite
@@ -138,6 +135,11 @@ void				server_set_callback(t_server *server, t_callback cb,
 int					server_poll_events(t_server *server);
 void				server_remove_client(t_server *server, t_client *client);
 int					server_get_client_fd(t_client *client);
+void				server_enqueue_write(t_server *server, t_client *client,
+					t_msg *msg);
+void				server_enqueue_write_by_fd(t_server *server, int fd,
+					t_msg *msg);
+void				server_add_client_by_fd(t_server *server, int fd);
 
 /*
 **	private functions, used for internal management

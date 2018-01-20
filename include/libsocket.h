@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 22:33:12 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/20 10:04:04 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,5 +97,10 @@ void					server_set_callback(t_server *server, t_callback cb,
 						void *ptr);
 int						server_poll_events(t_server *server);
 int						server_get_client_fd(t_client *client);
+void					server_enqueue_write(t_server *server,
+						t_client *client, t_msg *msg);
+void					server_enqueue_write_by_fd(t_server *server, int fd,
+						t_msg *msg);
+void					server_add_client_by_fd(t_server *server, int fd);
 
 #endif
