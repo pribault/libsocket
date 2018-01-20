@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 22:45:46 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/20 09:37:58 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,8 +143,6 @@ int					server_get_client_fd(t_client *client);
 **	private functions, used for internal management
 */
 
-void				server_get_client_message(t_server *server,
-					t_client *client, void *data, size_t size);
 void				server_add_clients_to_set(fd_set *set,
 					t_vector *clients, int *fd_max);
 void				server_add_write_request_to_set(fd_set *set,
