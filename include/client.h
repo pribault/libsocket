@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:55 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/20 14:13:52 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/20 16:49:01 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 */
 
 # include <sys/socket.h>
+# include <netdb.h>
 # include "libft.h"
 
 /*
@@ -78,6 +79,8 @@ typedef struct		s_client
 {
 	t_protocol		protocol;
 	int				sockfd;
+	struct addrinfo	addr;
+	socklen_t		addr_len;
 	struct timeval	timeout;
 	t_vector		*write_queue;
 	uint8_t			opt;
