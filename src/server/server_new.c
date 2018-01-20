@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 20:56:42 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 21:42:22 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/20 14:46:01 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ t_server	*server_new(void)
 		return (NULL);
 	}
 	server->queue_max = SERVER_DEFAULT_QUEUE_MAX;
+	server->clients_max = SERVER_DEFAULT_CLIENTS_MAX;
 	server->timeout = (struct timeval){SERVER_DEFAULT_TIMEOUT_S,
 	SERVER_DEFAULT_TIMEOUT_US};
 	server->opt = 0;

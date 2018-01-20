@@ -1,24 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_add_client_by_fd.c                          :+:      :+:    :+:   */
+/*   server_get_clients_max.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/20 09:50:47 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/20 14:43:13 by pribault         ###   ########.fr       */
+/*   Created: 2018/01/20 14:37:48 by pribault          #+#    #+#             */
+/*   Updated: 2018/01/20 14:47:39 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
 
-void	server_add_client_by_fd(t_server *server, int fd)
+size_t	server_get_clients_max(t_server *server)
 {
-	t_client	client;
-
-	if (!server || server->clients->n >= server->clients_max)
-		return ;
-	ft_bzero(&client, sizeof(t_client));
-	client.fd = fd;
-	ft_vector_add(server->clients, &client);
+	return ((server) ? server->clients_max : 0);
 }

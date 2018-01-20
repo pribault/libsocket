@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/20 14:18:02 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/20 14:48:36 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 */
 
 # define SERVER_DEFAULT_QUEUE_MAX	10
+# define SERVER_DEFAULT_CLIENTS_MAX	10
 # define SERVER_DEFAULT_TIMEOUT_S	1
 # define SERVER_DEFAULT_TIMEOUT_US	0
 
@@ -100,6 +101,7 @@ typedef struct		s_server
 	t_protocol		protocol;
 	int				sockfd;
 	int				queue_max;
+	size_t			clients_max;
 	struct timeval	timeout;
 	t_vector		*clients;
 	t_vector		*write_queue;
@@ -146,6 +148,8 @@ void				server_client_attach_data(t_client *client, void *data);
 void				*server_client_get_data(t_client *client);
 int					server_set_queue_max(t_server *server, int max);
 int					server_get_queue_max(t_server *server);
+void				server_set_clients_max(t_server *server, size_t max);
+size_t				server_get_clients_max(t_server *server);
 
 /*
 **	private functions, used for internal management

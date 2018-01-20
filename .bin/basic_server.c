@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/19 21:23:23 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/20 14:22:28 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/20 15:10:26 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,8 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		return (1);
 	server = server_new();
+	server_set_queue_max(server, 0);
+	server_set_clients_max(server, 10);
 	server_start(server, TCP, argv[1]);
 	server_set_callback(server, CLIENT_ADD_CB, &client_add);
 	server_set_callback(server, CLIENT_DEL_CB, &client_del);
