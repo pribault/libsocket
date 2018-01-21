@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/21 11:15:41 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/21 11:54:21 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,8 @@ typedef struct		s_server
 
 t_server			*server_new(void);
 void				server_delete(t_server **server);
-int					server_start(t_server *server, t_protocol protocol);
+int					server_start(t_server *server, t_protocol protocol,
+					char *port);
 void				server_stop(t_server *server);
 void				server_attach_data(t_server *server, void *data);
 void				*server_get_data(t_server *server);
@@ -151,8 +152,6 @@ int					server_set_queue_max(t_server *server, int max);
 int					server_get_queue_max(t_server *server);
 void				server_set_clients_max(t_server *server, size_t max);
 size_t				server_get_clients_max(t_server *server);
-int					server_bind(t_server *server, char *port);
-void				server_unbind(t_server *server);
 int					server_connect(t_server *server, char *address,
 					char *port);
 
@@ -160,6 +159,8 @@ int					server_connect(t_server *server, char *address,
 **	private functions, used for internal management
 */
 
+int					server_bind(t_server *server);
+void				server_unbind(t_server *server);
 void				server_add_clients_to_set(fd_set *set, fd_set *err_set,
 					t_vector *clients, int *fd_max);
 void				server_add_write_request_to_set(fd_set *set,

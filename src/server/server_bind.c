@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/21 10:46:08 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/21 11:13:08 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/21 11:49:33 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	server_bind_udp(t_server *server)
 	return (1);
 }
 
-int			server_bind(t_server *server, char *port)
+int			server_bind(t_server *server)
 {
 	struct sockaddr_in	addr;
 	int					n;
@@ -34,7 +34,6 @@ int			server_bind(t_server *server, char *port)
 	if (!server || !(server->opt & SERVER_RUNNING) ||
 		(server->opt & SERVER_BIND))
 		return (0);
-	server->port = ft_atou(port);
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(server->port);
 	addr.sin_addr.s_addr = INADDR_ANY;

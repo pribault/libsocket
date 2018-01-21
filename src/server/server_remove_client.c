@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/19 19:22:39 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/20 17:36:17 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/21 11:53:41 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,7 @@ void		server_remove_client(t_server *server, t_client *client)
 		vector->type);
 	else
 		server_remove_client_by_fd(vector, client);
-	ft_printf("vector->n=%d\n", vector->n);
+	if (!(server->opt & SERVER_BIND) &&
+		server->clients->n < server->clients_max)
+		server_bind(server);
 }
