@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/19 10:31:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/21 11:48:15 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/21 12:08:05 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	set_sets(t_server *server, fd_set *set, int *fd_max)
 	server_add_write_request_to_set(&set[1], server->write_queue, fd_max);
 }
 
-int		server_poll_events(t_server *server)
+int			server_poll_events(t_server *server)
 {
 	fd_set	set[3];
 	int		fd_max;

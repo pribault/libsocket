@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/21 11:54:13 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/21 12:08:50 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,6 @@ int				server_get_queue_max(t_server *server);
 void			server_set_clients_max(t_server *server, size_t max);
 size_t			server_get_clients_max(t_server *server);
 int				server_connect(t_server *server, char *address,
-				char *port);;
+				char *port);
 
 #endif

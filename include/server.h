@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/21 11:54:21 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/21 12:07:37 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 **	default server values
 */
 
-# define SERVER_DEFAULT_QUEUE_MAX	10
+# define SERVER_DEFAULT_QUEUE_MAX	2
 # define SERVER_DEFAULT_CLIENTS_MAX	10
 # define SERVER_DEFAULT_TIMEOUT_S	5
 # define SERVER_DEFAULT_TIMEOUT_US	0
