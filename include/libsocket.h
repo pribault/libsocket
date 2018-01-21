@@ -65,7 +65,7 @@ typedef struct	s_msg
 
 /*
 **	warning, t_client is different
-**	between client and server functions 
+**	between client and server functions
 */
 
 typedef void	*t_client;
@@ -111,5 +111,7 @@ void			server_set_clients_max(t_server *server, size_t max);
 size_t			server_get_clients_max(t_server *server);
 int				server_bind(t_server *server, char *port);
 void			server_unbind(t_server *server);
+int				server_connect(t_server *server, char *address,
+				char *port);;
 
 #endif

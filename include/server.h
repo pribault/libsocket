@@ -21,6 +21,7 @@
 
 # include <sys/socket.h>
 # include <arpa/inet.h>
+# include <netdb.h>
 # include "libft.h"
 
 /*
@@ -152,18 +153,20 @@ void				server_set_clients_max(t_server *server, size_t max);
 size_t				server_get_clients_max(t_server *server);
 int					server_bind(t_server *server, char *port);
 void				server_unbind(t_server *server);
+int					server_connect(t_server *server, char *address,
+					char *port);
 
 /*
 **	private functions, used for internal management
 */
 
-void				server_add_clients_to_set(fd_set *set,
+void				server_add_clients_to_set(fd_set *set, fd_set *err_set,
 					t_vector *clients, int *fd_max);
 void				server_add_write_request_to_set(fd_set *set,
 					t_vector *write_queue, int *fd_max);
 void				server_add_incoming_client(t_server *server, int *n_evts);
 void				server_manage_incoming_messages(t_server *server,
-					fd_set *set, int *n_evts);
+					fd_set *set, fd_set *err_set, int *n_evts);
 void				server_manage_write_requests(t_server *server,
 					fd_set *set, int *n_evts);
 
