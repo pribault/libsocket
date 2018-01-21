@@ -28,7 +28,7 @@ SERVER_SRC =	server_new.c server_delete.c\
 				server_set_clients_max.c\
 				server_get_clients_max.c\
 				server_bind.c\
-				server_unbind.c
+				server_unbind.c\
 				server_connect.c
 SRC =	$(CLIENT_SRC:%.c=client/%.c)\
 		$(SERVER_SRC:%.c=server/%.c)
