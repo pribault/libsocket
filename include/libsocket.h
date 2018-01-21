@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/21 12:08:50 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/21 14:17:16 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,26 @@ typedef enum	e_protocol
 	UDP = SOCK_DGRAM
 }				t_protocol;
 
-typedef enum	e_callback
+typedef enum	e_client_callback
 {
-	CLIENT_ADD_CB,
-	CLIENT_DEL_CB,
-	MSG_RECV_CB,
-	MSG_SEND_CB,
+	CLIENT_CONNECT_CB,
+	CLIENT_DISCONNECT_CB,
+	CLIENT_MSG_RECV_CB,
+	CLIENT_MSG_SEND_CB,
 	CLIENT_EXCEPTION_CB,
-	SERVER_EXCEPTION_CB,
-	CALLBACK_MAX
-}				t_callback;
+	CLIENT_CALLBACK_MAX
+}				t_client_callback;
+
+typedef enum	e_server_callback
+{
+	SERVER_CLIENT_ADD_CB,
+	SERVER_CLIENT_DEL_CB,
+	SERVER_MSG_RECV_CB,
+	SERVER_MSG_SEND_CB,
+	SERVER_CLIENT_EXCEPTION_CB,
+	SERVER_SERVER_EXCEPTION_CB,
+	SERVER_CALLBACK_MAX
+}				t_server_callback;
 
 /*
 **	structures
@@ -77,8 +87,16 @@ typedef void	*t_server;
 ************************
 */
 
-t_client		*client_new(t_protocol protocol,
+t_client		*client_new(void);
+int				client_connect(t_client *client, t_protocol protocol,
 				char *address, char *port);
+void			client_disconnect(t_client *client);
+void			client_set_callback(t_client *client, t_client_callback cb,
+				void *ptr);
+void			client_poll_events(t_client *client);
+void			client_get_incoming_message(t_client *client, int *n_evts);
+void			client_manage_write_requests(t_client *client, fd_set *set,
+				int *n_evts);
 
 /*
 ************************
@@ -93,9 +111,9 @@ int				server_start(t_server *server, t_protocol protocol,
 void			server_stop(t_server *server);
 void			server_attach_data(t_server *server, void *data);
 void			*server_get_data(t_server *server);
-void			server_set_callback(t_server *server, t_callback cb,
+void			server_set_callback(t_server *server, t_server_callback cb,
 				void *ptr);
-int				server_poll_events(t_server *server);
+void			server_poll_events(t_server *server);
 void			server_remove_client(t_server *server, t_client *client);
 int				server_get_client_fd(t_client *client);
 void			server_enqueue_write(t_server *server, t_client *client,
@@ -112,5 +130,7 @@ void			server_set_clients_max(t_server *server, size_t max);
 size_t			server_get_clients_max(t_server *server);
 int				server_connect(t_server *server, char *address,
 				char *port);
+void			client_enqueue_write_by_fd(t_client *client, int fd,
+				t_msg *msg);
 
 #endif

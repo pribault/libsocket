@@ -3,15 +3,18 @@ LIBSO = $(NAME:%.a=%.so)
 CC = clang
 CLIENT_SRC =	client_new.c\
 				client_connect.c\
-				client_disconnect.c
+				client_disconnect.c\
+				client_set_callback.c\
+				client_poll_events.c\
+				client_get_incoming_message.c\
+				client_manage_write_requests.c\
+				client_enqueue_write_by_fd.c
 SERVER_SRC =	server_new.c server_delete.c\
 				server_start.c server_stop.c\
 				server_attach_data.c\
 				server_get_data.c\
 				server_set_callback.c\
 				server_poll_events.c\
-				server_add_clients_to_set.c\
-				server_add_write_request_to_set.c\
 				server_add_incoming_client.c\
 				server_manage_incoming_messages.c\
 				server_manage_write_requests.c\

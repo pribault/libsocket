@@ -1,33 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_add_write_request_to_set.c                  :+:      :+:    :+:   */
+/*   client_get_incoming_message.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/19 12:50:09 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/19 22:20:24 by pribault         ###   ########.fr       */
+/*   Created: 2018/01/21 13:46:42 by pribault          #+#    #+#             */
+/*   Updated: 2018/01/21 13:50:44 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "client.h"
 
-void	server_add_write_request_to_set(fd_set *set, t_vector *write_queue,
-		int *fd_max)
+void	client_get_incoming_message(t_client *client, int *n_evts)
 {
-	t_towrite	*towrite;
-	size_t		i;
+	static char		buffer[READ_BUFFER_SIZE];
+	int				ret;
+	static t_msg	msg;
 
-	i = write_queue->n;
-	if (!set || !write_queue)
+	if (*n_evts < 1)
 		return ;
-	while (--i < (size_t)-1)
+	if ((ret = read(client->sockfd, &buffer, READ_BUFFER_SIZE)) > 0)
 	{
-		if ((towrite = ft_vector_get(write_queue, i)))
+		if (client->msg_recv)
 		{
-			if (towrite->client.fd > *fd_max)
-				*fd_max = towrite->client.fd;
-			FD_SET(towrite->client.fd, set);
+			msg.ptr = &buffer;
+			msg.size = ret;
+			client->msg_recv(client, &msg);
 		}
 	}
+	else if (!ret)
+		client_disconnect(client);
 }

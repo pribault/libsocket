@@ -1,6 +1,7 @@
 CC = clang
 FLAGS = -Wall -Wextra -Ofast
-SRC = basic_server.c
+SRC =	basic_server.c\
+		basic_client.c
 BIN = $(SRC:%.c=.bin/%.out)
 LIBFT = libft
 

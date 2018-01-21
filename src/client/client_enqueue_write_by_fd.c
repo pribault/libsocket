@@ -1,34 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_add_clients_to_set.c                        :+:      :+:    :+:   */
+/*   client_enqueue_write_by_fd.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/19 11:46:21 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/20 17:44:35 by pribault         ###   ########.fr       */
+/*   Created: 2018/01/21 14:09:48 by pribault          #+#    #+#             */
+/*   Updated: 2018/01/21 14:16:52 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "client.h"
 
-void	server_add_clients_to_set(fd_set *set, fd_set *err_set,
-		t_vector *clients, int *fd_max)
+void	client_enqueue_write_by_fd(t_client *client, int fd, t_msg *msg)
 {
-	t_client	*client;
-	size_t		i;
+	t_towrite	towrite;
 
-	if (!set || !clients || !fd_max)
+	if (!client || !msg)
 		return ;
-	i = (size_t)clients->n;
-	while (--i != (size_t)-1)
-	{
-		if ((client = ft_vector_get(clients, i)))
-		{
-			if (client->fd > *fd_max)
-				*fd_max = client->fd;
-			FD_SET(client->fd, set);
-			FD_SET(client->fd, err_set);
-		}
-	}
+	towrite.fd = fd;
+	towrite.data = *msg;
+	ft_vector_add(client->write_queue, &towrite);
 }

@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/21 12:07:37 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/21 13:46:21 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ void				server_attach_data(t_server *server, void *data);
 void				*server_get_data(t_server *server);
 void				server_set_callback(t_server *server, t_callback cb,
 					void *ptr);
-int					server_poll_events(t_server *server);
+void				server_poll_events(t_server *server);
 void				server_remove_client(t_server *server, t_client *client);
 int					server_get_client_fd(t_client *client);
 void				server_enqueue_write(t_server *server, t_client *client,
@@ -161,10 +161,7 @@ int					server_connect(t_server *server, char *address,
 
 int					server_bind(t_server *server);
 void				server_unbind(t_server *server);
-void				server_add_clients_to_set(fd_set *set, fd_set *err_set,
-					t_vector *clients, int *fd_max);
-void				server_add_write_request_to_set(fd_set *set,
-					t_vector *write_queue, int *fd_max);
+
 void				server_add_incoming_client(t_server *server, int *n_evts);
 void				server_manage_incoming_messages(t_server *server,
 					fd_set *set, fd_set *err_set, int *n_evts);
