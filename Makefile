@@ -84,7 +84,4 @@ fclean: clean
 norme:
 	@norminette $(OBJ:%.o=%.c) $(INCLUDE)
 
-test: $(NAME)
-	@make -f test.Makefile
-
 re: fclean all
