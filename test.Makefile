@@ -11,7 +11,7 @@ all: $(BIN)
 $(LIBFT)/libft.a:
 	@make -C $(LIBFT)
 
-%.out: %.c $(LIBFT)/libft.a
+%.out: %.c $(LIBFT)/libft.a libsocket.a
 	@$(CC) $(FLAGS) -o $@ $< -I include -I $(LIBFT)/include -lsocket -L $(LIBFT) -lft 
 	@echo "\033[0m🐧  \033[38;5;33m$@ done\033[0m"
 

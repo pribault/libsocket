@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 21:20:08 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/20 14:06:22 by pribault         ###   ########.fr       */
+/*   Updated: 2018/01/21 10:57:28 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,6 @@ void	server_stop(t_server *server)
 		if ((client = ft_vector_get(server->clients, i)))
 			close(client->fd);
 	ft_vector_resize(server->clients, 0);
-	close(server->sockfd);
+	server_unbind(server);
 	return ;
 }
