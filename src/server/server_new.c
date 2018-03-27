@@ -12,7 +12,7 @@
 
 #include "server.h"
 
-t_server	*server_new(void)
+t_server	*server_new(t_protocol protocol)
 {
 	t_server	*server;
 
@@ -26,5 +26,6 @@ t_server	*server_new(void)
 	server->timeout = (struct timeval){SERVER_DEFAULT_TIMEOUT_S,
 	SERVER_DEFAULT_TIMEOUT_US};
 	server->opt = 0;
+	server->protocol = protocol;
 	return (server);
 }

@@ -50,12 +50,11 @@ static int	server_bind(t_server *server)
 		return (0);
 }
 
-int			server_start(t_server *server, t_protocol protocol, char *port)
+int			server_start(t_server *server, char *port)
 {
 	if (!server || (server->opt & SERVER_RUNNING))
 		return (0);
 	server->opt |= SERVER_RUNNING;
-	server->protocol = protocol;
 	server->port = ft_atou(port);
 	return (server_bind(server));
 }

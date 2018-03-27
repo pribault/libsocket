@@ -126,10 +126,9 @@ typedef struct		s_server
 **	public functions
 */
 
-t_server			*server_new(void);
+t_server			*server_new(t_protocol protocol);
 void				server_delete(t_server **server);
-int					server_start(t_server *server, t_protocol protocol,
-					char *port);
+int					server_start(t_server *server, char *port);
 void				server_stop(t_server *server);
 void				server_attach_data(t_server *server, void *data);
 void				*server_get_data(t_server *server);

@@ -104,10 +104,9 @@ void			client_manage_write_requests(t_client *client, fd_set *set,
 ************************
 */
 
-t_server		*server_new(void);
+t_server		*server_new(t_protocol protocol);
 void			server_delete(t_server **server);
-int				server_start(t_server *server, t_protocol protocol,
-				char *port);
+int				server_start(t_server *server, char *port);
 void			server_stop(t_server *server);
 void			server_attach_data(t_server *server, void *data);
 void			*server_get_data(t_server *server);
@@ -126,8 +125,6 @@ void			server_client_attach_data(t_client *client, void *data);
 void			*server_client_get_data(t_client *client);
 int				server_set_queue_max(t_server *server, int max);
 int				server_get_queue_max(t_server *server);
-void			server_set_clients_max(t_server *server, size_t max);
-size_t			server_get_clients_max(t_server *server);
 int				server_connect(t_server *server, char *address,
 				char *port);
 void			client_enqueue_write_by_fd(t_client *client, int fd,
