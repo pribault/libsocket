@@ -34,7 +34,7 @@ void		server_remove_client(t_server *server, t_client *client)
 {
 	t_vector	*vector;
 
-	if (!server || !(vector = server->clients) || !client)
+	if (!server || !(vector = &server->clients) || !client)
 		return ;
 	if (server->client_del)
 		server->client_del(server, client);
@@ -45,7 +45,4 @@ void		server_remove_client(t_server *server, t_client *client)
 		vector->type);
 	else
 		server_remove_client_by_fd(vector, client);
-	if (!(server->opt & SERVER_BIND) &&
-		server->clients->n < server->clients_max)
-		server_bind(server);
 }

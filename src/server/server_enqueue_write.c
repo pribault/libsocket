@@ -21,5 +21,5 @@ void	server_enqueue_write(t_server *server, t_client *client,
 		return ;
 	towrite.client = *client;
 	towrite.data = *msg;
-	ft_vector_add(server->write_queue, &towrite);
+	ft_vector_add(&server->write_queue, &towrite);
 }

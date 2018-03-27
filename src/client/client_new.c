@@ -19,11 +19,7 @@ t_client	*client_new(void)
 	if (!(client = (t_client*)malloc(sizeof(t_client))))
 		return (NULL);
 	ft_bzero(client, sizeof(t_client));
-	if (!(client->write_queue = ft_vector_new(sizeof(t_towrite), 0)))
-	{
-		free(client);
-		return (NULL);
-	}
+	ft_vector_init(&client->write_queue, sizeof(t_towrite));
 	client->opt = CLIENT_RUNNING;
 	client->timeout = (struct timeval){CLIENT_DEFAULT_TIMEOUT_S,
 	CLIENT_DEFAULT_TIMEOUT_US};

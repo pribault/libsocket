@@ -84,7 +84,6 @@ int	main(int argc, char **argv)
 		return (1);
 	server = server_new();
 	server_set_queue_max(server, 1);
-	server_set_clients_max(server, 2);
 	server_start(server, TCP, argv[1]);
 	server_set_callback(server, SERVER_CLIENT_ADD_CB, &client_add);
 	server_set_callback(server, SERVER_CLIENT_DEL_CB, &client_del);

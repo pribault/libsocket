@@ -24,7 +24,7 @@ static int	iter_on_addresses(t_server *server, t_client *client,
 		{
 			client->addr = *addr->ai_addr;
 			client->addr_len = addr->ai_addrlen;
-			ft_vector_add(server->clients, client);
+			ft_vector_add(&server->clients, client);
 			if (server->client_add)
 				server->client_add(server, client);
 			freeaddrinfo(result);
@@ -42,8 +42,7 @@ int			server_connect(t_server *server, char *address, char *port)
 	struct addrinfo	hints;
 	struct addrinfo	*result;
 
-	if (!server || !address || !port ||
-		server->clients->n >= server->clients_max)
+	if (!server || !address || !port)
 		return (0);
 	ft_bzero(&hints, sizeof(struct addrinfo));
 	ft_bzero(&client, sizeof(t_client));

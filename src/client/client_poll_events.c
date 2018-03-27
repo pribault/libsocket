@@ -45,7 +45,7 @@ static void	set_sets(t_client *client, fd_set *set, int *fd_max)
 	}
 	else
 		*fd_max = 0;
-	client_add_write_request_to_set(&set[1], client->write_queue, fd_max);
+	client_add_write_request_to_set(&set[1], &client->write_queue, fd_max);
 }
 
 void		client_poll_events(t_client *client)

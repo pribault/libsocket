@@ -19,7 +19,7 @@ void	server_manage_write_requests(t_server *server, fd_set *set,
 	t_vector	*vector;
 	size_t		i;
 
-	if ((*n_evts) < 1 || !(vector = server->write_queue))
+	if ((*n_evts) < 1 || !(vector = &server->write_queue))
 		return ;
 	i = vector->n;
 	while (--i != (size_t)-1 && (*n_evts))

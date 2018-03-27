@@ -13,11 +13,11 @@ $(LIBFT)/libft.a:
 	@make -C $(LIBFT)
 
 %.out: %.c $(LIBFT)/libft.a libsocket.a
-	@$(CC) $(FLAGS) -o $@ $< -I include -I $(LIBFT)/include -lsocket -L $(LIBFT) -lft 
+	@$(CC) $(FLAGS) -o $@ $< -I include -I $(LIBFT)/include -L . -lsocket -L $(LIBFT) -lft 
 	@echo "\033[0m🐧  \033[38;5;33m$@ done\033[0m"
 
 fclean:
 	@rm -f $(BIN)
-	@if [ -a $(LIBFT)/libft.a ]; then make -C $(LIBFT) fclean; fi;
+	@if [ -e $(LIBFT)/libft.a ]; then make -C $(LIBFT) fclean; fi;
 
 re: fclean all

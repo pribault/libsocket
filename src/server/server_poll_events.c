@@ -58,16 +58,11 @@ static void	set_sets(t_server *server, fd_set *set, int *fd_max)
 	FD_ZERO(&set[0]);
 	FD_ZERO(&set[1]);
 	FD_ZERO(&set[2]);
-	if (server->opt & SERVER_BIND)
-	{
-		FD_SET(server->sockfd, &set[0]);
-		FD_SET(server->sockfd, &set[2]);
-		*fd_max = server->sockfd;
-	}
-	else
-		*fd_max = 0;
-	server_add_clients_to_set(&set[0], &set[2], server->clients, fd_max);
-	server_add_write_request_to_set(&set[1], server->write_queue, fd_max);
+	FD_SET(server->sockfd, &set[0]);
+	FD_SET(server->sockfd, &set[2]);
+	*fd_max = server->sockfd;
+	server_add_clients_to_set(&set[0], &set[2], &server->clients, fd_max);
+	server_add_write_request_to_set(&set[1], &server->write_queue, fd_max);
 }
 
 void		server_poll_events(t_server *server)

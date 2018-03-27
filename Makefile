@@ -28,37 +28,36 @@ SERVER_SRC =	server_new.c server_delete.c\
 				server_client_get_data.c\
 				server_set_queue_max.c\
 				server_get_queue_max.c\
-				server_set_clients_max.c\
-				server_get_clients_max.c\
-				server_bind.c\
-				server_unbind.c\
 				server_connect.c
 SRC =	$(CLIENT_SRC:%.c=client/%.c)\
 		$(SERVER_SRC:%.c=server/%.c)
-OBJ = $(SRC:%.c=obj/%.o)
-FLAGS = -Wall -Wextra
+OBJ_DIR =	.obj
+OBJ =		$(SRC:%.c=$(OBJ_DIR)/%.o)
+FLAGS =	-Wall -Wextra
 INCLUDES =	libsocket.h client.h server.h
-INCLUDE = $(INCLUDES:%.h=include/%.h)
-LIBFT = libft
+INCLUDE =	$(INCLUDES:%.h=include/%.h)
+LIBFT =	libft
 
 .PHONY: clean fclean all re norme
 
+.SILENT:
+
 all: $(NAME)
 
-obj:
-	@mkdir obj
+$(OBJ_DIR):
+	@mkdir $(OBJ_DIR)
 
-obj/client: | obj
-	@mkdir obj/client
+$(OBJ_DIR)/client: | $(OBJ_DIR)
+	@mkdir $(OBJ_DIR)/client
 
-obj/server: | obj
-	@mkdir obj/server
+$(OBJ_DIR)/server: | $(OBJ_DIR)
+	@mkdir $(OBJ_DIR)/server
 
-obj/client/%.o: src/client/%.c $(INCLUDE) | obj/client
+$(OBJ_DIR)/client/%.o: src/client/%.c $(INCLUDE) | $(OBJ_DIR)/client
 	@$(CC) $(FLAGS) -fPIC -I include -I $(LIBFT)/include -o $@ -c $<
 	@echo "\033[0m🌶  \033[38;5;226m$@ done\033[0m"
 
-obj/server/%.o: src/server/%.c $(INCLUDE) | obj/server
+$(OBJ_DIR)/server/%.o: src/server/%.c $(INCLUDE) | $(OBJ_DIR)/server
 	@$(CC) $(FLAGS) -fPIC -I include -I $(LIBFT)/include -o $@ -c $<
 	@echo "\033[0m🌶  \033[38;5;226m$@ done\033[0m"
 
@@ -78,6 +77,7 @@ clean:
 fclean: clean
 	@rm -f $(NAME)
 	@rm -f $(LIBSO)
+	@rm -rf $(OBJ_DIR)
 	@make -f test.Makefile fclean
 	@echo "\033[0m\033[38;5;87m$(NAME) and $(LIBSO) removed\033[0m"
 

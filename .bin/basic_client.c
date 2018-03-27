@@ -64,7 +64,8 @@ int	main(int argc, char **argv)
 	client_set_callback(client, CLIENT_DISCONNECT_CB, &disconnected);
 	client_set_callback(client, CLIENT_MSG_RECV_CB, &msg_recv);
 	client_set_callback(client, CLIENT_MSG_SEND_CB, &msg_send);
-	client_connect(client, TCP, argv[1], argv[2]);
+	if (!client_connect(client, TCP, argv[1], argv[2]))
+		return (1);
 	while (1)
 	{
 		client_poll_events(client);

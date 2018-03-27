@@ -16,13 +16,11 @@ void	server_add_client_by_fd(t_server *server, int fd)
 {
 	t_client	client;
 
-	if (!server || server->clients->n >= server->clients_max)
+	if (!server)
 		return ;
 	ft_bzero(&client, sizeof(t_client));
 	client.fd = fd;
-	ft_vector_add(server->clients, &client);
+	ft_vector_add(&server->clients, &client);
 	if (server->client_add)
 		server->client_add(server, &client);
-	if (server->clients->n >= server->clients_max)
-		server_unbind(server);
 }

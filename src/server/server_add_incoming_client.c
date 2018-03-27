@@ -19,14 +19,11 @@ void	server_add_incoming_client(t_server *server, int *n_evts)
 	ft_bzero(&client, sizeof(t_client));
 	client.addr_len = sizeof(struct sockaddr);
 	if (!server || !n_evts || (*n_evts) < 1 ||
-		server->clients->n >= server->clients_max ||
 		(client.fd = accept(server->sockfd, &client.addr,
 		&client.addr_len)) < 0)
 		return ;
 	(*n_evts)--;
-	ft_vector_add(server->clients, &client);
+	ft_vector_add(&server->clients, &client);
 	if (server->client_add)
 		server->client_add(server, &client);
-	if (server->clients->n >= server->clients_max)
-		server_unbind(server);
 }

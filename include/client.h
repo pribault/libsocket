@@ -93,7 +93,7 @@ typedef struct		s_client
 	struct sockaddr	addr;
 	socklen_t		addr_len;
 	struct timeval	timeout;
-	t_vector		*write_queue;
+	t_vector		write_queue;
 	uint8_t			opt;
 	void			(*connect)(struct s_client*);
 	void			(*disconnect)(struct s_client*);

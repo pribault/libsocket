@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/03 16:13:23 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/15 21:03:44 by pribault         ###   ########.fr       */
+/*   Updated: 2018/03/27 08:30:24 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,15 @@
 ** includes
 */
 
-# include <sys/wait.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <string.h>
 # include <fcntl.h>
 # include <dirent.h>
+# include <sys/wait.h>
+# include <sys/mman.h>
+# include <inttypes.h>
 # include "ft_printf.h"
-# include "malloc.h"
 
 /*
 ** macros
@@ -32,7 +33,16 @@
 
 # define VECTOR_SIZE	4096
 # define BUFF_SIZE 		4096
-# define COS_MAX		4096
+
+# define WHITESPACES	"\a\b\t\n\v\f\r "
+
+# define BYTE(x)		((1 << x))
+
+# define ERROR_EXIT		BYTE(0)
+
+# define FLAG_PARAM_MAX	4
+
+# define DEFAULT_VECTOR	(t_vector){0, 0, 0, NULL}
 
 /*
 ** structures
@@ -53,16 +63,102 @@ typedef struct		s_vector
 	void			*ptr;
 }					t_vector;
 
+typedef struct		s_circ_buffer
+{
+	uint32_t		write_idx;
+	uint32_t		read_idx;
+	uint64_t		type;
+	uint64_t		elems;
+	void			*ptr;
+}					t_circ_buffer;
+
 typedef struct		s_gnl_stack
 {
 	char			line[BUFF_SIZE + 1];
 	int				fd;
 }					t_gnl_stack;
 
+typedef enum		e_param_type
+{
+	PARAM_STR,
+	PARAM_INTEGER,
+	PARAM_UNSIGNED,
+	PARAM_FLOAT,
+	PARAM_MAX
+}					t_param_type;
+
+typedef struct		s_short_flag
+{
+	char			c;
+	void			(*function)(void *data);
+}					t_short_flag;
+
+typedef struct		s_long_flag
+{
+	char			*str;
+	int				n_params;
+	t_param_type	params_type[FLAG_PARAM_MAX];
+	void			(*function)(void *data, char **args, int n);
+}					t_long_flag;
+
+typedef struct		s_flags
+{
+	t_short_flag	*shorts;
+	t_long_flag		*longs;
+	void			(*def)(char *s, void *data);
+}					t_flags;
+
+typedef enum		e_default_error
+{
+	ERROR_ALLOCATION,
+	ERROR_FILE,
+	ERROR_UNKNOWN,
+	ERROR_STR,
+	ERROR_INTEGER,
+	ERROR_UNSIGNED,
+	ERROR_FLOAT,
+	ERROR_CUSTOM,
+	ERROR_NOT_ENOUGHT_PARAM,
+	ERROR_TOO_MUSH_PARAMS,
+	ERROR_UNKNOW_PARAMETER_TYPE,
+	ERROR_UNKNOWN_PARAMETER,
+	ERROR_UNKNOWN_SHORT_FLAG,
+	ERROR_UNKNOWN_LONG_FLAG,
+	ERROR_MMAP,
+	ERROR_INVALID_FREE,
+	ERROR_INVALID_POINTER,
+	ERROR_FT_MAX
+}					t_default_error;
+
+typedef struct		s_error
+{
+	int				error_code;
+	char			*format;
+	uint8_t			opt;
+}					t_error;
+
+typedef struct		s_enum_func
+{
+	int				id;
+	int				(*function)(void*);
+}					t_enum_func;
+
+typedef enum		e_bool
+{
+	FT_FALSE,
+	FT_TRUE
+}					t_bool;
+
 /*
 ** prototypes
 */
 
+void				ft_error(int fd, int error, void *param);
+void				ft_add_errors(t_error *array);
+void				ft_get_flags(int argc, char **argv, t_flags *flags,
+					void *data);
+t_flags				*ft_get_flag_array(t_short_flag *chars, t_long_flag *strs,
+					void (*def)(char*, void*));
 double				ft_atof(char *str);
 int					ft_atoi(char *str);
 int					ft_atoi_base(char *str, char *base);
@@ -107,10 +203,13 @@ int					ft_isalnum(int c);
 int					ft_isalpha(int c);
 int					ft_isascii(int c);
 int					ft_isdigit(int c);
+int					ft_isfloat(char *s);
+int					ft_isinteger(char *s);
 int					ft_isnumeric(char *s);
 char				ft_isof(int c, char *str);
 int					ft_isprime(int n);
 int					ft_isprint(int c);
+int					ft_isunsigned(char *s);
 
 /*
 **	maths functions
@@ -171,18 +270,30 @@ void				ft_lstsort(t_list *head, int (*sort)(void*, void*));
 **	vector functions
 */
 
+void				ft_vector_init(t_vector *vector, size_t type);
+void				ft_vector_del(t_vector *vector);
 void				ft_vector_add(t_vector *vector, void *ptr);
-void				ft_vector_del(t_vector **vector);
 void				ft_vector_del_one(t_vector *vector, size_t i);
 void				*ft_vector_get(t_vector *vector, size_t n);
-t_vector			*ft_vector_new(size_t type, size_t n);
 void				ft_vector_printhex(t_vector *vector);
 void				ft_vector_resize(t_vector *vector, size_t new_size);
+
+/*
+**	circular buffer functions
+*/
+
+void				ft_circ_buffer_init(t_circ_buffer *buffer,
+					uint64_t type_size, uint64_t n_elements);
+void				ft_circ_buffer_del(t_circ_buffer *buffer);
+void				ft_circ_buffer_enqueue(t_circ_buffer *buffer, void *data);
+void				*ft_circ_buffer_dequeue(t_circ_buffer *dequeue);
 
 /*
 **	string functions
 */
 
+char				*ft_get_file_name_from_path(char *path);
+char				*ft_getenv(char **env, char *name);
 char				**ft_multisplit(char *str, char *sep);
 char				*ft_strcat(char *s1, const char *s2);
 char				*ft_strchr(const char *s, int c);
@@ -213,6 +324,13 @@ char				**ft_strsplit(char const *s, char c);
 char				*ft_strstr(const char *big, const char *little);
 char				*ft_strsub(char const *s, unsigned int start, size_t len);
 char				*ft_strtrim(char const *s);
-void				ft_swap(void **a, void **b);
+void				ft_swap(void *a, void *b, size_t size);
+
+/*
+**	global variables
+*/
+
+extern t_error		g_default_errors[];
+extern t_error		*g_ft_errors;
 
 #endif

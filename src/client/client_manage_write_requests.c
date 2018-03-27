@@ -19,7 +19,7 @@ void	client_manage_write_requests(t_client *client, fd_set *set,
 	t_vector	*vector;
 	size_t		i;
 
-	if ((*n_evts) < 1 || !(vector = client->write_queue))
+	if ((*n_evts) < 1 || !(vector = &client->write_queue))
 		return ;
 	i = vector->n;
 	while (--i != (size_t)-1 && (*n_evts))
