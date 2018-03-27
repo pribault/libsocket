@@ -64,15 +64,17 @@ static void	set_sets(t_server *server, fd_set *set, int *fd_max)
 
 void		server_poll_events(t_server *server)
 {
-	fd_set	set[3];
-	int		fd_max;
-	int		ret;
+	struct timeval	time;
+	fd_set			set[3];
+	int				fd_max;
+	int				ret;
 
-	if (!server || !(server->opt & SERVER_RUNNING))
+	if (!server)
 		return ;
 	set_sets(server, (fd_set*)&set, &fd_max);
+	time = server->timeout;
 	if ((ret = select(fd_max + 1, &set[0], &set[1], &set[2],
-		&server->timeout)) < 0)
+		&time)) < 0)
 		return ;
 	if (!ret)
 		return ;

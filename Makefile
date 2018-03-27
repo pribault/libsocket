@@ -39,7 +39,7 @@ fclean:
 	@make -f $(MAKE_DIR)/$(CLIENT).$(EXT) fclean
 	@make -f $(MAKE_DIR)/$(SERVER).$(EXT) fclean
 	@make -f $(MAKE_DIR)/$(TEST).$(EXT) fclean
-	@rm $(LIBSO)
+	@rm -f $(LIBSO)
 
 norme:
 	@make -f $(MAKE_DIR)/$(CLIENT).$(EXT) norme
