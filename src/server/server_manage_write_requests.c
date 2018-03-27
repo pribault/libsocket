@@ -15,25 +15,27 @@
 void	server_manage_write_requests(t_server *server, fd_set *set,
 		int *n_evts)
 {
-	t_towrite	*towrite;
-	t_vector	*vector;
-	size_t		i;
+	t_towrite		*towrite;
+	t_circ_buffer	*buffer;
+	uint64_t		size;
+	uint64_t		i;
 
-	if ((*n_evts) < 1 || !(vector = &server->write_queue))
+	if ((*n_evts) < 1 || !(buffer = &server->write_queue))
 		return ;
-	i = vector->n;
-	while (--i != (size_t)-1 && (*n_evts))
-	{
-		if ((towrite = ft_vector_get(vector, i)) &&
-			FD_ISSET(towrite->client.fd, set))
+	i = (uint64_t)-1;
+	size = ft_circ_buffer_get_size(buffer);
+	while (++i < size &&
+		(towrite = ft_circ_buffer_dequeue(buffer)))
+		if (FD_ISSET(towrite->client.fd, set))
 		{
+			FD_CLR(towrite->client.fd, set);
 			if (write(towrite->client.fd, towrite->data.ptr,
 				towrite->data.size) < 0)
-				return ;
-			ft_vector_del_one(vector, i);
+				return (ft_circ_buffer_enqueue(buffer, towrite));
 			if (server->msg_send)
 				server->msg_send(server, &towrite->client, &towrite->data);
 			(*n_evts)--;
 		}
-	}
+		else
+			ft_circ_buffer_enqueue(buffer, towrite);
 }

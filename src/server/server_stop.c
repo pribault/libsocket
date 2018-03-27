@@ -21,11 +21,8 @@ void		server_stop(t_server *server)
 	if (!server || !(server->opt & SERVER_RUNNING))
 		return ;
 	server->opt &= ~SERVER_RUNNING;
-	i = (size_t)-1;
-	while (++i < server->write_queue.n)
-		if ((towrite = ft_vector_get(&server->write_queue, i)))
-			free(towrite->data.ptr);
-	ft_vector_resize(&server->write_queue, 0);
+	while ((towrite = ft_circ_buffer_dequeue(&server->write_queue)))
+		free(towrite->data.ptr);
 	i = (size_t)-1;
 	while (++i < server->clients.n)
 		if ((client = ft_vector_get(&server->clients, i)))

@@ -31,13 +31,14 @@
 */
 
 # define READ_BUFFER_SIZE		65536
+# define CIRCULAR_BUFFER_SIZE	128
 
 /*
 **	default server values
 */
 
 # define SERVER_DEFAULT_QUEUE_MAX	2
-# define SERVER_DEFAULT_TIMEOUT_S	5
+# define SERVER_DEFAULT_TIMEOUT_S	1
 # define SERVER_DEFAULT_TIMEOUT_US	0
 
 /*
@@ -103,7 +104,7 @@ typedef struct		s_server
 	int				queue_max;
 	struct timeval	timeout;
 	t_vector		clients;
-	t_vector		write_queue;
+	t_circ_buffer	write_queue;
 	uint16_t		port;
 	uint8_t			opt;
 	void			*data;

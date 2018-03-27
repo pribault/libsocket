@@ -11,6 +11,8 @@ SRC =	ft_abs.c\
 		ft_circ_buffer_del.c\
 		ft_circ_buffer_dequeue.c\
 		ft_circ_buffer_enqueue.c\
+		ft_circ_buffer_get_size.c\
+		ft_circ_buffer_get.c\
 		ft_circ_buffer_init.c\
 		ft_error.c\
 		ft_execute.c\

@@ -12,23 +12,20 @@
 
 #include "client.h"
 
-static void	client_add_write_request_to_set(fd_set *set, t_vector *write_queue,
+static void	client_add_write_request_to_set(fd_set *set, t_circ_buffer *queue,
 			int *fd_max)
 {
 	t_towrite	*towrite;
 	size_t		i;
 
-	i = write_queue->n;
-	if (!set || !write_queue)
+	if (!set || !queue)
 		return ;
-	while (--i < (size_t)-1)
+	i = (size_t)-1;
+	while ((towrite = ft_circ_buffer_get(queue, ++i)))
 	{
-		if ((towrite = ft_vector_get(write_queue, i)))
-		{
-			if (towrite->fd > *fd_max)
-				*fd_max = towrite->fd;
-			FD_SET(towrite->fd, set);
-		}
+		if (towrite->fd > *fd_max)
+			*fd_max = towrite->fd;
+		FD_SET(towrite->fd, set);
 	}
 }
 

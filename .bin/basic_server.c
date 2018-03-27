@@ -84,7 +84,11 @@ int	main(int argc, char **argv)
 		return (1);
 	server = server_new();
 	server_set_queue_max(server, 1);
-	server_start(server, TCP, argv[1]);
+	if (!server_start(server, TCP, argv[1]))
+	{
+		ft_printf("cannot bind to %s\n", argv[1]);
+		return (1);
+	}
 	server_set_callback(server, SERVER_CLIENT_ADD_CB, &client_add);
 	server_set_callback(server, SERVER_CLIENT_DEL_CB, &client_del);
 	server_set_callback(server, SERVER_MSG_RECV_CB, &msg_recv);

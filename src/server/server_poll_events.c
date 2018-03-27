@@ -33,23 +33,20 @@ static void	server_add_clients_to_set(fd_set *set, fd_set *err_set,
 	}
 }
 
-static void	server_add_write_request_to_set(fd_set *set, t_vector *write_queue,
+static void	server_add_write_request_to_set(fd_set *set, t_circ_buffer *queue,
 			int *fd_max)
 {
 	t_towrite	*towrite;
 	size_t		i;
 
-	i = write_queue->n;
-	if (!set || !write_queue)
+	if (!set || !queue)
 		return ;
-	while (--i < (size_t)-1)
+	i = (size_t)-1;
+	while ((towrite = ft_circ_buffer_get(queue, ++i)))
 	{
-		if ((towrite = ft_vector_get(write_queue, i)))
-		{
-			if (towrite->client.fd > *fd_max)
-				*fd_max = towrite->client.fd;
-			FD_SET(towrite->client.fd, set);
-		}
+		if (towrite->client.fd > *fd_max)
+			*fd_max = towrite->client.fd;
+		FD_SET(towrite->client.fd, set);
 	}
 }
 

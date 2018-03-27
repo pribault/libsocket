@@ -20,7 +20,8 @@ t_server	*server_new(void)
 		return (NULL);
 	ft_bzero(server, sizeof(t_server));
 	ft_vector_init(&server->clients, sizeof(t_client));
-	ft_vector_init(&server->write_queue, sizeof(t_towrite));
+	ft_circ_buffer_init(&server->write_queue, sizeof(t_towrite),
+	CIRCULAR_BUFFER_SIZE);
 	server->queue_max = SERVER_DEFAULT_QUEUE_MAX;
 	server->timeout = (struct timeval){SERVER_DEFAULT_TIMEOUT_S,
 	SERVER_DEFAULT_TIMEOUT_US};

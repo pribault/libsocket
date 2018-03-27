@@ -57,6 +57,5 @@ int			server_start(t_server *server, t_protocol protocol, char *port)
 	server->opt |= SERVER_RUNNING;
 	server->protocol = protocol;
 	server->port = ft_atou(port);
-	server_bind(server);
-	return (1);
+	return (server_bind(server));
 }

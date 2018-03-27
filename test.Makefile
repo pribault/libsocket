@@ -5,7 +5,7 @@ SRC =	basic_server.c\
 BIN = $(SRC:%.c=.bin/%.out)
 LIBFT = libft
 
-.PHONY: fclean re
+.PHONY: fclean re $(LIBFT)/libft.a
 
 all: $(BIN)
 

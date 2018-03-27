@@ -287,6 +287,8 @@ void				ft_circ_buffer_init(t_circ_buffer *buffer,
 void				ft_circ_buffer_del(t_circ_buffer *buffer);
 void				ft_circ_buffer_enqueue(t_circ_buffer *buffer, void *data);
 void				*ft_circ_buffer_dequeue(t_circ_buffer *dequeue);
+void				*ft_circ_buffer_get(t_circ_buffer *buffer, uint32_t idx);
+uint64_t			ft_circ_buffer_get_size(t_circ_buffer *buffer);
 
 /*
 **	string functions

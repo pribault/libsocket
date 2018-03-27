@@ -1,28 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client_new.c                                       :+:      :+:    :+:   */
+/*   ft_circ_buffer_get_size.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/18 19:39:06 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/21 13:37:22 by pribault         ###   ########.fr       */
+/*   Created: 2018/03/27 15:53:46 by pribault          #+#    #+#             */
+/*   Updated: 2018/03/27 15:54:42 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "client.h"
+#include "libft.h"
 
-t_client	*client_new(void)
+uint64_t	ft_circ_buffer_get_size(t_circ_buffer *buffer)
 {
-	t_client	*client;
-
-	if (!(client = (t_client*)malloc(sizeof(t_client))))
-		return (NULL);
-	ft_bzero(client, sizeof(t_client));
-	ft_circ_buffer_init(&client->write_queue, sizeof(t_towrite),
-	CIRCULAR_BUFFER_SIZE);
-	client->opt = CLIENT_RUNNING;
-	client->timeout = (struct timeval){CLIENT_DEFAULT_TIMEOUT_S,
-	CLIENT_DEFAULT_TIMEOUT_US};
-	return (client);
+	return ((buffer->write_idx < buffer->read_idx) ?
+		buffer->elems + buffer->write_idx - buffer->read_idx :
+		buffer->write_idx - buffer->read_idx);
 }

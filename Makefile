@@ -33,7 +33,7 @@ SRC =	$(CLIENT_SRC:%.c=client/%.c)\
 		$(SERVER_SRC:%.c=server/%.c)
 OBJ_DIR =	.obj
 OBJ =		$(SRC:%.c=$(OBJ_DIR)/%.o)
-FLAGS =	-Wall -Wextra
+FLAGS =	-Wall -Wextra -Werror
 INCLUDES =	libsocket.h client.h server.h
 INCLUDE =	$(INCLUDES:%.h=include/%.h)
 LIBFT =	libft
