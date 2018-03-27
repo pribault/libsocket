@@ -19,6 +19,7 @@ void	ft_circ_buffer_init(t_circ_buffer *buffer, uint64_t type_size,
 	buffer->read_idx = 0;
 	buffer->type = type_size;
 	buffer->elems = n_elements + 1;
+	buffer->n = 0;
 	if (!(buffer->ptr = malloc(type_size * n_elements)))
 		ft_error(2, ERROR_ALLOCATION, NULL);
 }

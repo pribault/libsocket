@@ -67,6 +67,7 @@ typedef struct		s_circ_buffer
 {
 	uint32_t		write_idx;
 	uint32_t		read_idx;
+	uint32_t		n;
 	uint64_t		type;
 	uint64_t		elems;
 	void			*ptr;

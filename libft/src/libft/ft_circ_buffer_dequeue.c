@@ -20,5 +20,6 @@ void	*ft_circ_buffer_dequeue(t_circ_buffer *buffer)
 		return (NULL);
 	result = buffer->ptr + buffer->read_idx * buffer->type;
 	buffer->read_idx = (buffer->read_idx + 1) % buffer->elems;
+	buffer->n--;
 	return (result);
 }

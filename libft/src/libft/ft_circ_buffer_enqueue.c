@@ -20,4 +20,6 @@ void	ft_circ_buffer_enqueue(t_circ_buffer *buffer, void *data)
 	buffer->write_idx %= buffer->elems;
 	if (buffer->write_idx == buffer->read_idx)
 		buffer->read_idx = (buffer->read_idx + 1) % buffer->elems;
+	else
+		buffer->n++;
 }

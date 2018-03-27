@@ -14,10 +14,12 @@
 
 void	*ft_circ_buffer_get(t_circ_buffer *buffer, uint32_t idx)
 {
-	if (buffer->write_idx != buffer->read_idx &&
-	idx < (buffer->elems + buffer->write_idx - buffer->read_idx) %
-	buffer->elems)
-		return (buffer->ptr + ((buffer->read_idx + idx) % buffer->elems) *
+	if (idx < buffer->n)
+	{
+		if (buffer->read_idx + idx < buffer->elems)
+			return (buffer->ptr + (buffer->read_idx + idx) * buffer->type);
+		return (buffer->ptr + (buffer->read_idx + idx - buffer->elems) *
 		buffer->type);
+	}
 	return (NULL);
 }

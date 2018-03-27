@@ -14,7 +14,5 @@
 
 uint64_t	ft_circ_buffer_get_size(t_circ_buffer *buffer)
 {
-	return ((buffer->write_idx < buffer->read_idx) ?
-		buffer->elems + buffer->write_idx - buffer->read_idx :
-		buffer->write_idx - buffer->read_idx);
+	return (buffer->n);
 }
