@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 11:29:02 by pribault         ###   ########.fr       */
+/*   Updated: 2018/03/28 11:57:49 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ typedef enum		e_callback
 	CLIENT_DEL_CB,
 	MSG_RECV_CB,
 	MSG_SEND_CB,
+	MSG_TRASH_CB,
 	CLIENT_EXCEPTION_CB,
 	SERVER_EXCEPTION_CB,
 	CALLBACK_MAX
@@ -112,6 +113,7 @@ typedef struct		s_server
 	void			(*client_del)(struct s_server*, t_client*);
 	void			(*msg_recv)(struct s_server*, t_client*, t_msg*);
 	void			(*msg_send)(struct s_server*, t_client*, t_msg*);
+	void			(*msg_trash)(struct s_server*, t_client*, t_msg*);
 	void			(*client_excpt)(struct s_server*, t_client*);
 	void			(*server_excpt)(struct s_server*);
 }					t_server;

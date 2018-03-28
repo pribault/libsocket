@@ -1,27 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_circ_buffer_init.c                              :+:      :+:    :+:   */
+/*   ft_circ_buffer_set_trash_callback.c                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/26 19:37:34 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 12:47:41 by pribault         ###   ########.fr       */
+/*   Created: 2018/03/28 11:49:16 by pribault          #+#    #+#             */
+/*   Updated: 2018/03/28 12:48:29 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_circ_buffer_init(t_circ_buffer *buffer, uint64_t type_size,
-		uint64_t n_elements)
+void	ft_circ_buffer_set_trash_callback(t_circ_buffer *buffer,
+		void (*callback)(void*, void*), void *data)
 {
-	buffer->write_idx = 0;
-	buffer->read_idx = 0;
-	buffer->type = type_size;
-	buffer->elems = n_elements + 1;
-	buffer->n = 0;
-	buffer->trash_callback = NULL;
-	buffer->data = NULL;
-	if (!(buffer->ptr = malloc(type_size * n_elements)))
-		ft_error(2, ERROR_ALLOCATION, NULL);
+	buffer->trash_callback = callback;
+	buffer->data = data;
 }

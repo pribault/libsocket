@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 11:28:45 by pribault         ###   ########.fr       */
+/*   Updated: 2018/03/28 11:58:04 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef enum	e_server_callback
 	SERVER_CLIENT_DEL_CB,
 	SERVER_MSG_RECV_CB,
 	SERVER_MSG_SEND_CB,
+	SERVER_MSG_TRASH_CB,
 	SERVER_CLIENT_EXCEPTION_CB,
 	SERVER_SERVER_EXCEPTION_CB,
 	SERVER_CALLBACK_MAX
