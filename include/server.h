@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 22:51:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/21 13:46:21 by pribault         ###   ########.fr       */
+/*   Updated: 2018/03/28 11:29:02 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,9 @@ int					server_set_queue_max(t_server *server, int max);
 int					server_get_queue_max(t_server *server);
 int					server_connect(t_server *server, char *address,
 					char *port);
+void				server_set_timeout(t_server *server, uint64_t seconds,
+					uint64_t micro_seconds);
+struct timeval		*server_get_timeout(t_server *server);
 
 /*
 **	private functions, used for internal management

@@ -20,6 +20,8 @@ SRC =	server_new.c server_delete.c\
 		server_client_get_data.c\
 		server_set_queue_max.c\
 		server_get_queue_max.c\
+		server_set_timeout.c\
+		server_get_timeout.c\
 		server_connect.c
 DIR = server
 SRC_DIR = src
