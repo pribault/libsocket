@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 11:58:04 by pribault         ###   ########.fr       */
+/*   Updated: 2018/03/28 13:03:54 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 */
 
 # include <sys/socket.h>
+# include <inttypes.h>
 # include <unistd.h>
 
 /*
