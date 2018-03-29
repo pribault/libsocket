@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/19 21:23:23 by pribault          #+#    #+#             */
-/*   Updated: 2018/01/21 14:18:56 by pribault         ###   ########.fr       */
+/*   Updated: 2018/03/29 18:25:54 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,9 @@ int	main(int argc, char **argv)
 
 	if (argc != 2)
 		return (1);
-	server = server_new();
+	server = server_new(TCP);
 	server_set_queue_max(server, 1);
-	if (!server_start(server, TCP, argv[1]))
+	if (!server_start(server, argv[1]))
 	{
 		ft_printf("cannot bind to %s\n", argv[1]);
 		return (1);

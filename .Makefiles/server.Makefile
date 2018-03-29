@@ -22,7 +22,9 @@ SRC =	server_new.c server_delete.c\
 		server_get_queue_max.c\
 		server_set_timeout.c\
 		server_get_timeout.c\
-		server_connect.c
+		server_get_incoming_message.c\
+		server_connect.c\
+		server_find_client_by_address.c
 DIR = server
 SRC_DIR = src
 OBJ_DIR = .obj
@@ -32,6 +34,7 @@ INCLUDES =	server.h
 INCLUDE = $(INCLUDES:%.h=include/%.h)
 N = 0
 MAX = $(words $(OBJ))
+COMPILED = false
 LIBFT = libft
 LIBFT_INC_DIR = $(LIBFT)/include
 LIBFT_INCLUDES =	libft.h\
@@ -42,11 +45,12 @@ LIBFT_INCLUDES =	libft.h\
 					structs.h
 DEPENDENCIES =	$(LIBFT_INCLUDES:%.h=$(LIBFT_INC_DIR)/%.h)
 
-.PHONY: clean fclean all re norme $(NAME)
+.PHONY: clean fclean all re norme
 
 .SILENT:
 
 all: $(NAME)
+	@if [ $(COMPILED) = true ]; then echo "\033[0m\033[38;5;166m[$(DIR) ∎∎∎∎] \033[0m🐹  \033[38;5;214m$(NAME) done\033[0m"; else echo "\033[0m\033[38;5;166m[$(DIR) ∎∎∎∎] \033[0m🐹  \033[38;5;214mnothing to be done\033[0m"; fi
 
 $(OBJ_DIR):
 	@mkdir $@
@@ -63,7 +67,7 @@ $(OBJ_DIR)/$(DIR)/%.o: $(SRC_DIR)/$(DIR)/%.c $(INCLUDE) $(DEPENDENCIES) | $(OBJ_
 $(NAME): $(OBJ)
 	@ar rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
-	@if [ ! $(N) = 0 ]; then echo "\033[0m\033[38;5;166m[$(DIR) ∎∎∎∎] \033[0m🐹  \033[38;5;214m$@ done\033[0m"; else echo "\033[0m\033[38;5;166m[$(DIR) ∎∎∎∎] \033[0m🐹  \033[38;5;214mnothing to be done\033[0m"; fi
+	$(eval COMPILED=true)
 
 clean:
 	@rm -rf $(OBJ_DIR)/$(DIR)
