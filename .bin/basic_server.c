@@ -28,7 +28,7 @@ void	treat_command(t_server *server, void *cmd, size_t size)
 			exit(0);
 		}
 		else if (len == 3 && !ft_strcmp(array[0], "connect"))
-			server_connect(server, array[1], array[2]);
+			server_connect(server, (t_method){TCP, IPV4}, array[1], array[2]);
 		ft_free_array((void**)array, len + 1);
 	}
 	free(cmd);
@@ -82,9 +82,9 @@ int	main(int argc, char **argv)
 
 	if (argc != 2)
 		return (1);
-	server = server_new(TCP);
+	server = server_new();
 	server_set_queue_max(server, 1);
-	if (!server_start(server, argv[1]))
+	if (!server_start(server, (t_method){TCP, IPV4}, argv[1]))
 	{
 		ft_printf("cannot bind to %s\n", argv[1]);
 		return (1);
