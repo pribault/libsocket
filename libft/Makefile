@@ -8,7 +8,7 @@ FT_PRINTF = ft_printf
 FT_JOINF = ft_joinf
 DIR = .Makefiles
 EXT = Makefile
-JOBS = 4
+JOBS = 1
 
 .PHONY: clean fclean all re norme $(NAME)
 
