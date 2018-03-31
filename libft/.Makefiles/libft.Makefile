@@ -73,6 +73,7 @@ SRC =	ft_abs.c\
 		ft_putstr.c\
 		ft_putstr_fd.c\
 		ft_rand.c\
+		ft_reduce_path.c\
 		ft_showtab.c\
 		ft_showtab_fd.c\
 		ft_sqrt.c\
