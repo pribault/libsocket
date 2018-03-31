@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 21:06:13 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 11:36:28 by pribault         ###   ########.fr       */
+/*   Updated: 2018/03/31 18:24:37 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ static int	server_bind(t_server *server)
 	if ((server->sockfd = socket(server->domain, server->protocol, 0)) < 0 ||
 		setsockopt(server->sockfd, SOL_SOCKET, SO_REUSEADDR, &n,
 		sizeof(int)) < 0 ||
-		bind(server->sockfd, (void*)&addr, sizeof(struct sockaddr_in6)) < 0)
+		bind(server->sockfd, (void*)&addr, (server->protocol == IPV4) ?
+		sizeof(struct sockaddr) : sizeof(struct sockaddr_in6)) < 0)
 		return (0);
 	if (server->protocol == TCP)
 		return (server_bind_tcp(server));
