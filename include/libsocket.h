@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/29 18:03:46 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/16 11:21:51 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,15 @@
 # include <sys/socket.h>
 # include <inttypes.h>
 # include <unistd.h>
+
+/*
+***************
+**	defines  **
+***************
+*/
+
+# define VERSION_MAJOR	1
+# define VERSION_MINOR	0
 
 /*
 *************
