@@ -1,21 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_set_queue_max.c                             :+:      :+:    :+:   */
+/*   socket_set_timeout.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/20 14:14:59 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 11:35:41 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 15:25:16 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 15:49:50 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libsocket.h"
 
-int		server_set_queue_max(t_server *server, int max)
+void	socket_set_timeout(t_socket *socket, t_timeval *timeout)
 {
-	if (max < 0)
-		return (0);
-	server->queue_max = max;
-	return (1);
+	ft_memcpy(&socket->timeout, timeout, sizeof(t_timeval));
 }

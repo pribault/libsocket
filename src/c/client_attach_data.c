@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_attach_data.c                               :+:      :+:    :+:   */
+/*   client_attach_data.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/19 10:47:12 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 11:30:11 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 15:14:58 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 15:15:54 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libsocket.h"
 
-void	server_attach_data(t_server *server, void *data)
+void	client_attach_data(t_client *client, void *data)
 {
-	server->data = data;
+	client->data = data;
 }

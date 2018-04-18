@@ -1,18 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_client_get_data.c                           :+:      :+:    :+:   */
+/*   socket_get_timeout.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/20 13:48:06 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 11:30:27 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 15:25:16 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 15:50:02 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libsocket.h"
 
-void	*server_client_get_data(t_client *client)
+t_timeval	*socket_get_timeout(t_socket *socket)
 {
-	return (client->data);
+	static t_timeval	copy;
+
+	ft_memcpy(&copy, &socket->timeout, sizeof(t_timeval));
+	return (&copy);
 }

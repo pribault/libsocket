@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 13:34:52 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/18 11:13:28 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/18 15:49:27 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,15 @@
 
 # include "libft.h"
 
+typedef struct timeval		t_timeval;
+
+typedef struct				s_addr
+{
+	struct sockaddr_storage	addr;
+	socklen_t				len;
+	char					*str;
+}							t_addr;
+
 typedef struct				s_method
 {
 	t_protocol				protocol;
@@ -28,9 +37,8 @@ typedef struct				s_method
 typedef struct				s_client
 {
 	int						fd;
-	struct sockaddr_storage	addr;
-	socklen_t				addr_len;
-	struct timeval			last;
+	t_addr					addr;
+	t_timeval				last;
 	void					*data;
 	t_write_type			write_type;
 }							t_client;
@@ -53,7 +61,8 @@ typedef struct				s_socket
 	t_domain				domain;
 	int						sockfd;
 	int						queue_max;
-	struct timeval			timeout;
+	t_timeval				timeout;
+	uint64_t				read_size;
 	t_vector				clients;
 	t_circ_buffer			write_queue;
 	uint16_t				port;

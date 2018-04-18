@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/03 16:13:23 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/01 20:00:12 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/10 12:07:09 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <sys/mman.h>
 # include <inttypes.h>
 # include "ft_printf.h"
+# include "malloc.h"
 
 /*
 ** macros
@@ -62,6 +63,7 @@ typedef enum		e_color_effect
 	EFFECT_BLINK = 5,
 	EFFECT_NONE = 6,
 	EFFECT_REVERTED = 7,
+	EFFECT_NOBACK = 8
 }					t_color_effect;
 
 typedef struct		s_color
@@ -273,6 +275,8 @@ void				ft_memdel(void **ap);
 void				ft_memdump(void *ptr, size_t size);
 void				*ft_memdup(void *ptr, size_t size);
 void				*ft_memmove(void *dst, const void *src, size_t len);
+void				*ft_memschr(const void *big, const void *little,
+					size_t n1, size_t n2);
 void				*ft_memset(void *b, int c, size_t len);
 
 /*
@@ -311,6 +315,7 @@ void				ft_vector_init(t_vector *vector, t_alloc_type alloc,
 void				ft_vector_del(t_vector *vector);
 void				ft_vector_add(t_vector *vector, void *ptr);
 void				ft_vector_del_one(t_vector *vector, size_t i);
+size_t				ft_vector_find(t_vector *vector, void *ptr);
 void				*ft_vector_get(t_vector *vector, size_t n);
 void				ft_vector_printhex(t_vector *vector);
 void				ft_vector_resize(t_vector *vector, size_t new_size);
@@ -337,6 +342,7 @@ void				ft_circ_buffer_set_trash_callback(t_circ_buffer *buffer,
 char				*ft_get_file_name_from_path(char *path);
 char				*ft_getenv(char **env, char *name);
 char				**ft_multisplit(char *str, char *sep);
+char				**ft_multisplit_stop(char *str, char *sep, char *stop);
 char				*ft_reduce_path(char *path);
 char				*ft_strcat(char *s1, const char *s2);
 char				*ft_strchr(const char *s, int c);

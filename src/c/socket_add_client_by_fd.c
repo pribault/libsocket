@@ -1,20 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_delete.c                                    :+:      :+:    :+:   */
+/*   socket_add_client_by_fd.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/19 08:37:07 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 11:30:55 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 14:41:01 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 14:41:48 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libsocket.h"
 
-void	server_delete(t_server **server)
+void	socket_add_client_by_fd(t_socket *socket, int fd)
 {
-	ft_vector_del(&(*server)->clients);
-	ft_circ_buffer_del(&(*server)->write_queue);
-	free(*server);
+	t_client	client;
+
+	ft_bzero(&client, sizeof(t_client));
+	client.fd = fd;
+	client.write_type = WRITE_BY_FD;
+	ft_vector_add(&socket->clients, &client);
+	if (socket->client_add)
+		socket->client_add(socket, ft_vector_get(&socket->clients,
+		socket->clients.n - 1));
 }

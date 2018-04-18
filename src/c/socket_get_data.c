@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_get_data.c                                  :+:      :+:    :+:   */
+/*   socket_get_data.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/19 10:55:29 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 11:31:43 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 15:11:50 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 15:13:04 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libsocket.h"
 
-void	*server_get_data(t_server *server)
+void	*socket_get_data(t_socket *socket)
 {
-	return (server->data);
+	return (socket->data);
 }

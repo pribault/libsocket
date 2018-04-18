@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 10:54:53 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/18 11:03:19 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/18 14:45:36 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,19 +52,24 @@ static void	socket_add_write_request_to_set(fd_set *set, t_circ_buffer *queue,
 	}
 }
 
-static void	set_sets(t_socket *socket, fd_set *set, int *fd_max)
+static void	set_sets(t_socket *socket, fd_set *set, int *fd_max, uint8_t flags)
 {
 	FD_ZERO(&set[0]);
 	FD_ZERO(&set[1]);
 	FD_ZERO(&set[2]);
-	FD_SET(socket->sockfd, &set[0]);
-	FD_SET(socket->sockfd, &set[2]);
+	if (flags & ACCEPT_CONNECTIONS)
+	{
+		FD_SET(socket->sockfd, &set[0]);
+		FD_SET(socket->sockfd, &set[2]);
+	}
 	*fd_max = socket->sockfd;
-	socket_add_clients_to_set(&set[0], &set[2], &socket->clients, fd_max);
-	socket_add_write_request_to_set(&set[1], &socket->write_queue, fd_max);
+	if (flags & ALLOW_READ)
+		socket_add_clients_to_set(&set[0], &set[2], &socket->clients, fd_max);
+	if (flags & ALLOW_WRITE)
+		socket_add_write_request_to_set(&set[1], &socket->write_queue, fd_max);
 }
 
-void		socket_poll_events(t_socket *socket)
+void		socket_poll_events(t_socket *socket, uint8_t flags)
 {
 	struct timeval	time;
 	fd_set			set[3];
@@ -72,7 +77,7 @@ void		socket_poll_events(t_socket *socket)
 	int				ret;
 
 	fd_max = -42;
-	set_sets(socket, (fd_set*)&set, &fd_max);
+	set_sets(socket, (fd_set*)&set, &fd_max, flags);
 	time = socket->timeout;
 	if ((ret = select(fd_max + 1, &set[0], &set[1], &set[2],
 		&time)) <= 0)
@@ -86,6 +91,8 @@ void		socket_poll_events(t_socket *socket)
 	}
 	if (FD_ISSET(socket->sockfd, &set[2]) && socket->socket_excpt)
 		socket->socket_excpt(socket);
-	socket_manage_incoming_messages(socket, &set[0], &set[2], &ret);
-	socket_manage_write_requests(socket, &set[1], &ret);
+	if (flags & ALLOW_WRITE)
+		socket_manage_write_requests(socket, &set[1], &ret);
+	if (flags & ALLOW_READ)
+		socket_manage_incoming_messages(socket, &set[0], &set[2], &ret);
 }

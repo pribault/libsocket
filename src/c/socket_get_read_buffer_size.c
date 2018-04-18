@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_client_attach_data.c                        :+:      :+:    :+:   */
+/*   socket_get_read_buffer_size.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/20 13:46:52 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 11:30:17 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 15:25:16 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 15:34:17 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libsocket.h"
 
-void	server_client_attach_data(t_client *client, void *data)
+uint64_t	socket_get_read_buffer_size(t_socket *socket)
 {
-	client->data = data;
+	return (socket->read_size);
 }

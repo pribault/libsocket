@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 13:35:56 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/18 11:14:20 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/18 15:07:38 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@ typedef enum	e_write_type
 	WRITE_BY_FD,
 	WRITE_BY_ADDR
 }				t_write_type;
+
+/*
+**	callbacks used with socket_set_callback
+*/
 
 typedef enum	e_callback
 {

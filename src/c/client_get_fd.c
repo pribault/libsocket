@@ -1,20 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_set_timeout.c                               :+:      :+:    :+:   */
+/*   client_get_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/28 11:21:19 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 11:27:56 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 15:21:24 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 15:22:01 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libsocket.h"
 
-void	server_set_timeout(t_server *server,
-		uint64_t seconds, uint64_t micro_seconds)
+int		client_get_fd(t_client *client)
 {
-	server->timeout.tv_sec = seconds;
-	server->timeout.tv_usec = micro_seconds;
+	return (client->fd);
 }

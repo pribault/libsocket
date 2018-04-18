@@ -1,20 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_set_callback.c                              :+:      :+:    :+:   */
+/*   client_get_address.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/19 10:22:09 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 11:57:09 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 15:18:06 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 15:18:59 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libsocket.h"
 
-void	server_set_callback(t_server *server, t_callback cb, void *ptr)
+t_addr	*client_get_address(t_client *client)
 {
-	if (cb >= CALLBACK_MAX)
-		return ;
-	((void**)&server->client_add)[cb] = ptr;
+	return (&client->addr);
 }

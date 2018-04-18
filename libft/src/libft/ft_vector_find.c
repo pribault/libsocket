@@ -1,26 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_add_client_by_fd.c                          :+:      :+:    :+:   */
+/*   ft_vector_find.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/20 09:50:47 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 13:22:49 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/10 12:07:37 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/10 12:36:47 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libft.h"
 
-void	server_add_client_by_fd(t_server *server, int fd)
+size_t	ft_vector_find(t_vector *vector, void *ptr)
 {
-	t_client	client;
+	size_t	i;
 
-	ft_bzero(&client, sizeof(t_client));
-	client.fd = fd;
-	client.write_type = WRITE_BY_FD;
-	ft_vector_add(&server->clients, &client);
-	if (server->client_add)
-		server->client_add(server, ft_vector_get(&server->clients,
-		server->clients.n - 1));
+	i = (size_t)-1;
+	while (++i < vector->n)
+		if (!ft_memcmp(ft_vector_get(vector, i), ptr, vector->type))
+			return (i);
+	return ((size_t)-1);
 }

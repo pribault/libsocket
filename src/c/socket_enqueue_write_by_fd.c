@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_enqueue_write_by_address.c                  :+:      :+:    :+:   */
+/*   socket_enqueue_write_by_fd.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/29 18:02:08 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/18 12:00:58 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 14:31:03 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 14:33:32 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libsocket.h"
 
-void	server_enqueue_write_by_address(t_server *server,
-		struct sockaddr *address, t_msg *msg)
+void	socket_enqueue_write_by_fd(t_socket *socket, int fd, t_msg *msg)
 {
 	t_client	client;
 
 	ft_bzero(&client, sizeof(t_client));
-	client.addr = *address;
-	server_enqueue_write(server, &client, msg);
+	client.fd = fd;
+	client.write_type = WRITE_BY_FD;
+	socket_enqueue_write(socket, &client, msg);
 }

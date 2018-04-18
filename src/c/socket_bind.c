@@ -6,9 +6,11 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 14:13:41 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/16 15:09:15 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/18 15:31:36 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#define LIBSOCKET_INTERNAL
 
 #include "libsocket.h"
 

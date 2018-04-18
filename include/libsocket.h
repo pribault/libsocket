@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/18 11:57:52 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/18 15:58:11 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # define LIBSOCKET_VERSION_MINOR	0
 
 # ifdef __cplusplus
-
 
 namespace libsocket
 {
@@ -92,11 +91,11 @@ void		socket_unbind(t_socket *socket);
 **	 - SOCKET_MSG_RECV_CB, will be called with (struct s_socket *, t_client *,
 **		t_msg *)
 **	 - SOCKET_MSG_SEND_CB, will be called with (struct s_socket *, t_client *,
-		t_msg *)
+**		t_msg *)
 **	 - SOCKET_MSG_TRASH_CB, will be called with (struct s_socket *, t_client *,
-		t_msg *)
+**		t_msg *)
 **	 - SOCKET_CLIENT_EXCEPTION_CB, will be called with (struct s_socket *,
-		t_client *)
+**		t_client *)
 **	 - SOCKET_BIND_CB, will be called with (struct s_socket *)
 **	 - SOCKET_UNBIND_CB, will be called with (struct s_socket *)
 **	 - SOCKET_EXCEPTION_CB, will be called with (struct s_socket *)
@@ -132,6 +131,80 @@ void		socket_remove_client(t_socket *socket, t_client *client);
 
 void		socket_enqueue_write(t_socket *socket, t_client *client,
 			t_msg *msg);
+
+/*
+**	enqueue a message to a file descriptor
+*/
+
+void		socket_enqueue_write_by_fd(t_socket *socket, int fd, t_msg *msg);
+
+/*
+**	enqueue a message to an address
+*/
+
+void		socket_enqueue_write_by_address(t_socket *socket,
+			struct sockaddr_storage *address, t_msg *msg);
+
+/*
+**	add a client by its file descriptor.
+*/
+
+void		socket_add_client_by_fd(t_socket *socket, int fd);
+
+/*
+**	handle specified events with flags.
+**	flags is a bitmask resulting of the binary 'or' operation of the followings values:
+**	 - ACCEPT_CONNECTIONS
+**	 - ALLOW_READ
+**	 - ALLOW_WRITE
+*/
+
+void		socket_poll_events(t_socket *socket, uint8_t flags);
+
+/*
+**	getter and setter for socket attached data
+*/
+
+void		socket_attach_data(t_socket *socket, void *data);
+void		*socket_get_data(t_socket *socket);
+
+/*
+**	getter and setter for client attached data
+*/
+
+void		client_attach_data(t_client *client, void *data);
+void		*client_get_data(t_client *client);
+
+/*
+**	get client address.
+**	the returned structure contains the address, its len, and the hostname string
+*/
+
+t_addr		*client_get_address(t_client *client);
+
+/*
+**	get the client's file descriptor
+*/
+
+int			client_get_fd(t_client *client);
+
+/*
+**	getter and setter for socket timeout.
+**	this timeout is the time after which socker_poll_events will return
+**	if no event is received (cannot read, cannot write, and no new client is connecting)
+*/
+
+t_timeval	*socket_get_timeout(t_socket *socket);
+void		socket_set_timeout(t_socket *socket, t_timeval *timeout);
+
+/*
+**	getter and setter for read buffer size.
+**	this value is used to allocate the read buffer on the stack, so if too big
+**	your program will segfault (stack overflow).
+*/
+
+void		socket_set_read_buffer_size(t_socket *socket, uint64_t read_size);
+uint64_t	socket_get_read_buffer_size(t_socket *socket);
 
 /*
 **	following functions are used for internal purpose in libsocket

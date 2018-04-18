@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 13:38:02 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/18 11:15:50 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/18 15:31:02 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,30 +35,54 @@
 # endif
 
 /*
+**	redefine BYTE macro if necessary
+*/
+
+# ifndef BYTE
+
+#  define BYTE(shift)	(1 << shift)
+
+# endif
+
+# ifndef TIMEVAL
+
+#  define TIMEVAL(s, us)	(struct timeval){s, us}
+
+# endif
+
+/*
+**	macros used in socket_poll_events to define
+**	the type of events to handle
+*/
+
+# define ACCEPT_CONNECTIONS		BYTE(0)
+# define ALLOW_READ				BYTE(1)
+# define ALLOW_WRITE			BYTE(2)
+
+/*
 **	number of messages that can be enqueued to write in a socket
 */
 
-#  define CIRCULAR_BUFFER_SIZE	128
+#  ifdef LIBSOCKET_INTERNAL
 
-/*
-**	size of buffer used to read packets
-*/
-
-#  define READ_BUFFER_SIZE		512
+#   define CIRCULAR_BUFFER_SIZE	128
 
 /*
 **	default values
 */
 
-#  define SERVER_DEFAULT_QUEUE_MAX	2
-#  define SERVER_DEFAULT_TIMEOUT_S	1
-#  define SERVER_DEFAULT_TIMEOUT_US	0
+#   define DEFAULT_READ_BUFFER_SIZE	512
+#   define DEFAULT_QUEUE_MAX			2
+#   define DEFAULT_TIMEOUT_S			1
+#   define DEFAULT_TIMEOUT_US		0
 
 /*
 **	option masks
 */
 
-# define SERVER_RUNNING		0x1
+#   define SERVER_RUNNING		0x1
+
+#  endif
 
 # else
 

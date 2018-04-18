@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 10:26:20 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/18 10:29:29 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/18 15:00:20 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	iter_on_addresses(t_socket *socket, t_client *client,
 		if (connect(client->fd, addr->ai_addr, addr->ai_addrlen) >= 0)
 		{
 			ft_memcpy(&client->addr, addr->ai_addr, addr->ai_addrlen);
-			client->addr_len = addr->ai_addrlen;
+			client->addr.len = addr->ai_addrlen;
 			client->write_type = WRITE_BY_ADDR;
 			ft_vector_add(&socket->clients, client);
 			if (socket->client_add)

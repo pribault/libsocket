@@ -6,9 +6,11 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 11:32:44 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/16 14:50:40 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/18 15:31:19 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#define LIBSOCKET_INTERNAL
 
 #include "libsocket.h"
 
@@ -30,9 +32,9 @@ t_socket	*socket_new(void)
 	sizeof(t_towrite), CIRCULAR_BUFFER_SIZE);
 	ft_circ_buffer_set_trash_callback(&socket->write_queue,
 	(void*)&socket_trash_callback, socket);
-	socket->queue_max = SERVER_DEFAULT_QUEUE_MAX;
-	socket->timeout = (struct timeval){SERVER_DEFAULT_TIMEOUT_S,
-	SERVER_DEFAULT_TIMEOUT_US};
+	socket->queue_max = DEFAULT_QUEUE_MAX;
+	socket->timeout = TIMEVAL(DEFAULT_TIMEOUT_S, DEFAULT_TIMEOUT_US);
+	socket->read_size = DEFAULT_READ_BUFFER_SIZE;
 	socket->opt = 0;
 	return (socket);
 }

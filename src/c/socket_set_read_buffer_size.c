@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_get_client_fd.c                             :+:      :+:    :+:   */
+/*   socket_set_read_buffer_size.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/19 22:30:38 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 11:31:35 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 15:25:16 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 15:34:32 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libsocket.h"
 
-int		server_get_client_fd(t_client *client)
+void	socket_set_read_buffer_size(t_socket *socket, uint64_t read_size)
 {
-	return (client->fd);
+	socket->read_size = read_size;
 }

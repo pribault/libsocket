@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 11:10:58 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/18 11:11:42 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/18 16:23:45 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	socket_try_write(t_circ_buffer *buffer, t_towrite *towrite)
 	{
 		if (sendto(towrite->client.fd, towrite->data.ptr,
 			towrite->data.size, 0, (void*)&towrite->client.addr,
-			towrite->client.addr_len) < 0)
+			towrite->client.addr.len) < 0)
 		{
 			ft_circ_buffer_enqueue(buffer, towrite);
 			return (0);

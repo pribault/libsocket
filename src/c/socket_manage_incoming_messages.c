@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 11:05:18 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/18 11:06:04 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/18 16:34:12 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 static void	socket_get_client_message(t_socket *socket, t_client *client)
 {
-	char	buffer[READ_BUFFER_SIZE];
+	char	buffer[socket->read_size];
 	int		ret;
 	t_msg	msg;
 
-	if ((ret = read(client->fd, &buffer, READ_BUFFER_SIZE)) > 0)
+	if ((ret = read(client->fd, &buffer, socket->read_size)) > 0)
 	{
 		if (socket->msg_recv)
 		{
@@ -48,7 +48,8 @@ void		socket_manage_incoming_messages(t_socket *socket, fd_set *set,
 		{
 			if (FD_ISSET(client->fd, err_set))
 			{
-				socket_remove_client(socket, client);
+				if (socket->client_excpt)
+					socket->client_excpt(socket, client);
 				(*n_evts)--;
 			}
 			else if (FD_ISSET(client->fd, set))

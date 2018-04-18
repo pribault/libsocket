@@ -6,7 +6,7 @@
 #    By: pribault <pribault@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/16 14:01:15 by pribault          #+#    #+#              #
-#    Updated: 2018/04/18 11:53:23 by pribault         ###   ########.fr        #
+#    Updated: 2018/04/18 15:25:54 by pribault         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,19 @@ SRC =	socket_new.c socket_delete.c\
 		socket_manage_write_requests.c\
 		socket_find_client_by_address.c\
 		socket_remove_client.c\
-		socket_enqueue_write.c
+		socket_enqueue_write.c\
+		socket_enqueue_write_by_fd.c\
+		socket_add_client_by_fd.c\
+		socket_attach_data.c\
+		socket_get_data.c\
+		socket_set_timeout.c\
+		socket_get_timeout.c\
+		socket_set_read_buffer_size.c\
+		socket_get_read_buffer_size.c\
+		client_attach_data.c\
+		client_get_data.c\
+		client_get_address.c\
+		client_get_fd.c
 DIR = c
 SRC_DIR = src
 OBJ_DIR = .obj
