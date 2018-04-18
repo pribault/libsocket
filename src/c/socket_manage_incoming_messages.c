@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_manage_incoming_messages.c                  :+:      :+:    :+:   */
+/*   socket_manage_incoming_messages.c                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/19 17:18:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/02 13:45:40 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 11:05:18 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 11:06:04 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libsocket.h"
 
-static void	server_get_client_message(t_server *server, t_client *client)
+static void	socket_get_client_message(t_socket *socket, t_client *client)
 {
 	char	buffer[READ_BUFFER_SIZE];
 	int		ret;
@@ -20,18 +20,18 @@ static void	server_get_client_message(t_server *server, t_client *client)
 
 	if ((ret = read(client->fd, &buffer, READ_BUFFER_SIZE)) > 0)
 	{
-		if (server->msg_recv)
+		if (socket->msg_recv)
 		{
 			msg.ptr = &buffer;
 			msg.size = ret;
-			server->msg_recv(server, client, &msg);
+			socket->msg_recv(socket, client, &msg);
 		}
 	}
 	else if (!ret)
-		server_remove_client(server, client);
+		socket_remove_client(socket, client);
 }
 
-void		server_manage_incoming_messages(t_server *server, fd_set *set,
+void		socket_manage_incoming_messages(t_socket *socket, fd_set *set,
 			fd_set *err_set, int *n_evts)
 {
 	t_vector	*vector;
@@ -40,7 +40,7 @@ void		server_manage_incoming_messages(t_server *server, fd_set *set,
 
 	if ((*n_evts) < 1)
 		return ;
-	vector = &server->clients;
+	vector = &socket->clients;
 	i = vector->n;
 	while (--i != (size_t)-1 && (*n_evts))
 	{
@@ -48,13 +48,12 @@ void		server_manage_incoming_messages(t_server *server, fd_set *set,
 		{
 			if (FD_ISSET(client->fd, err_set))
 			{
-				if (server->client_excpt)
-					server->client_excpt(server, client);
+				socket_remove_client(socket, client);
 				(*n_evts)--;
 			}
 			else if (FD_ISSET(client->fd, set))
 			{
-				server_get_client_message(server, client);
+				socket_get_client_message(socket, client);
 				(*n_evts)--;
 			}
 		}

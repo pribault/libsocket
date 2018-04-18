@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_connect.c                                   :+:      :+:    :+:   */
+/*   socket_connect.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/20 16:33:12 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/10 21:36:11 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 10:26:20 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 10:29:29 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libsocket.h"
 
-static int	iter_on_addresses(t_server *server, t_client *client,
+static int	iter_on_addresses(t_socket *socket, t_client *client,
 			struct addrinfo *result)
 {
 	struct addrinfo	*addr;
@@ -23,12 +23,12 @@ static int	iter_on_addresses(t_server *server, t_client *client,
 		if (connect(client->fd, addr->ai_addr, addr->ai_addrlen) >= 0)
 		{
 			ft_memcpy(&client->addr, addr->ai_addr, addr->ai_addrlen);
-			client->addr.len = addr->ai_addrlen;
+			client->addr_len = addr->ai_addrlen;
 			client->write_type = WRITE_BY_ADDR;
-			ft_vector_add(&server->clients, client);
-			if (server->client_add)
-				server->client_add(server, ft_vector_get(&server->clients,
-				server->clients.n - 1));
+			ft_vector_add(&socket->clients, client);
+			if (socket->client_add)
+				socket->client_add(socket, ft_vector_get(&socket->clients,
+				socket->clients.n - 1));
 			freeaddrinfo(result);
 			return (1);
 		}
@@ -38,7 +38,7 @@ static int	iter_on_addresses(t_server *server, t_client *client,
 	return (0);
 }
 
-int			server_connect(t_server *server, t_method method, char *address,
+int			socket_connect(t_socket *msocket, t_method method, char *address,
 			char *port)
 {
 	t_client		client;
@@ -57,5 +57,5 @@ int			server_connect(t_server *server, t_method method, char *address,
 			freeaddrinfo(result);
 		return (0);
 	}
-	return (iter_on_addresses(server, &client, result));
+	return (iter_on_addresses(msocket, &client, result));
 }

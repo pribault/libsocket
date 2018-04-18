@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_remove_client.c                             :+:      :+:    :+:   */
+/*   socket_remove_client.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/19 19:22:39 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/10 21:47:31 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 11:20:23 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 11:21:12 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libsocket.h"
 
-static void	server_remove_client_by_fd(t_vector *vector,
+static void	socket_remove_client_by_fd(t_vector *vector,
 			t_client *client)
 {
 	t_client	*tmp;
@@ -30,20 +30,18 @@ static void	server_remove_client_by_fd(t_vector *vector,
 	}
 }
 
-void		server_remove_client(t_server *server, t_client *client)
+void		socket_remove_client(t_socket *socket, t_client *client)
 {
 	t_vector	*vector;
 
-	vector = &server->clients;
-	if (server->client_del)
-		server->client_del(server, client);
-	if (client->addr.str)
-		free(client->addr.str);
+	vector = &socket->clients;
+	if (socket->client_del)
+		socket->client_del(socket, client);
 	close(client->fd);
 	if ((void*)client >= vector->ptr &&
 		(void*)client < vector->ptr + vector->size)
 		ft_vector_del_one(vector, ((void*)client - vector->ptr) /
 		vector->type);
 	else
-		server_remove_client_by_fd(vector, client);
+		socket_remove_client_by_fd(vector, client);
 }

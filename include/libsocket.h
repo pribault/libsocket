@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/16 16:18:06 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/18 11:57:52 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # define LIBSOCKET_VERSION_MINOR	0
 
 # ifdef __cplusplus
+
 
 namespace libsocket
 {
@@ -103,6 +104,76 @@ void		socket_unbind(t_socket *socket);
 */
 
 void		socket_set_callback(t_socket *socket, t_callback cb, void *ptr);
+
+/*
+**	try to connect to a distant server using address and port.
+**	method is a libsocket structure containing the protocol used (tcp or udp),
+**	and the domain (ipv4 or ipv6).
+**
+**	return 1 on succes, 0 on error.
+**
+**	errors leading to failure:
+**	 - cannot create socket
+**	 - cannot find address
+*/
+
+int			socket_connect(t_socket *msocket, t_method method, char *address,
+			char *port);
+
+/*
+**	remove a client from a socket and close related connection.
+*/
+
+void		socket_remove_client(t_socket *socket, t_client *client);
+
+/*
+**	enqueue a message to a client
+*/
+
+void		socket_enqueue_write(t_socket *socket, t_client *client,
+			t_msg *msg);
+
+/*
+**	following functions are used for internal purpose in libsocket
+*/
+
+#  ifdef LIBSOCKET_INTERNAL
+
+/*
+**	used to add an incoming client in socket_poll_events
+*/
+
+void		socket_add_incoming_client(t_socket *socket, int *n_evts);
+
+/*
+**	used to get an incoming message in socket_poll_events for udp protocol
+*/
+
+void		socket_get_incoming_message(t_socket *socket, int *n_evts);
+
+/*
+**	used to get incoming messages in socket_poll_events for tcp protocol
+*/
+
+void		socket_manage_incoming_messages(t_socket *socket, fd_set *set,
+			fd_set *err_set, int *n_evts);
+
+/*
+**	used to manage enqueued messages for write in socket_poll_events
+*/
+
+void		socket_manage_write_requests(t_socket *socket, fd_set *set,
+			int *n_evts);
+
+/*
+**	used to find a client by its address when using udp protocol
+**	in socket_get_incoming_message
+*/
+
+t_client	*socket_find_client_by_address(t_socket *socket,
+			struct sockaddr_storage *addr);
+
+#  endif
 
 # endif
 

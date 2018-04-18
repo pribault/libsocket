@@ -6,7 +6,7 @@
 #    By: pribault <pribault@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/16 14:01:15 by pribault          #+#    #+#              #
-#    Updated: 2018/04/16 15:15:42 by pribault         ###   ########.fr        #
+#    Updated: 2018/04/18 11:53:23 by pribault         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,15 @@ NAMESO = $(NAME:%.a=%.so)
 CC = clang
 SRC =	socket_new.c socket_delete.c\
 		socket_bind.c socket_unbind.c\
-		socket_set_callback.c
+		socket_set_callback.c socket_connect.c\
+		socket_poll_events.c\
+		socket_add_incoming_client.c\
+		socket_get_incoming_message.c\
+		socket_manage_incoming_messages.c\
+		socket_manage_write_requests.c\
+		socket_find_client_by_address.c\
+		socket_remove_client.c\
+		socket_enqueue_write.c
 DIR = c
 SRC_DIR = src
 OBJ_DIR = .obj

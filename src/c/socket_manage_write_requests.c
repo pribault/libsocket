@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_manage_write_requests.c                     :+:      :+:    :+:   */
+/*   socket_manage_write_requests.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/19 17:18:05 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/11 21:58:00 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 11:10:58 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 11:11:42 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "libsocket.h"
 
-static int	server_try_write(t_circ_buffer *buffer, t_towrite *towrite)
+static int	socket_try_write(t_circ_buffer *buffer, t_towrite *towrite)
 {
 	if (towrite->client.write_type == WRITE_BY_FD)
 	{
@@ -28,7 +28,7 @@ static int	server_try_write(t_circ_buffer *buffer, t_towrite *towrite)
 	{
 		if (sendto(towrite->client.fd, towrite->data.ptr,
 			towrite->data.size, 0, (void*)&towrite->client.addr,
-			towrite->client.addr.len) < 0)
+			towrite->client.addr_len) < 0)
 		{
 			ft_circ_buffer_enqueue(buffer, towrite);
 			return (0);
@@ -38,7 +38,7 @@ static int	server_try_write(t_circ_buffer *buffer, t_towrite *towrite)
 	return (0);
 }
 
-void		server_manage_write_requests(t_server *server, fd_set *set,
+void		socket_manage_write_requests(t_socket *socket, fd_set *set,
 			int *n_evts)
 {
 	t_towrite		*towrite;
@@ -48,7 +48,7 @@ void		server_manage_write_requests(t_server *server, fd_set *set,
 
 	if ((*n_evts) < 1)
 		return ;
-	buffer = &server->write_queue;
+	buffer = &socket->write_queue;
 	i = (uint64_t)-1;
 	size = ft_circ_buffer_get_size(buffer);
 	while (++i < size &&
@@ -56,10 +56,10 @@ void		server_manage_write_requests(t_server *server, fd_set *set,
 		if (FD_ISSET(towrite->client.fd, set))
 		{
 			FD_CLR(towrite->client.fd, set);
-			if (!server_try_write(buffer, towrite))
+			if (!socket_try_write(buffer, towrite))
 				return ;
-			if (server->msg_send)
-				server->msg_send(server, &towrite->client, &towrite->data);
+			if (socket->msg_send)
+				socket->msg_send(socket, &towrite->client, &towrite->data);
 			(*n_evts)--;
 		}
 		else

@@ -1,22 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client_enqueue_write_by_fd.c                       :+:      :+:    :+:   */
+/*   socket_enqueue_write.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/21 14:09:48 by pribault          #+#    #+#             */
-/*   Updated: 2018/03/28 11:37:20 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 11:53:11 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 11:56:36 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "client.h"
+#include "libsocket.h"
 
-void	client_enqueue_write_by_fd(t_client *client, int fd, t_msg *msg)
+void	socket_enqueue_write(t_socket *socket, t_client *client,
+		t_msg *msg)
 {
 	t_towrite	towrite;
 
-	towrite.fd = fd;
-	towrite.data = *msg;
-	ft_circ_buffer_enqueue(&client->write_queue, &towrite);
+	ft_memcpy(&towrite.client, client, sizeof(t_client));
+	ft_memcpy(&towrite.data, msg, sizeof(t_msg));
+	ft_circ_buffer_enqueue(&socket->write_queue, &towrite);
+	if (ft_circ_buffer_get_size(&socket->write_queue) >=
+		CIRCULAR_BUFFER_SIZE - 2 &&
+		socket->buffer_full)
+		socket->buffer_full(socket);
 }

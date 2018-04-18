@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 13:38:02 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/16 14:51:02 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/18 11:15:50 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define LIBSOCKET_DEFINES_H
 
 # ifndef __cplusplus
+
+#  define METHOD(prot, dom)	(t_method){prot, dom}
 
 /*
 **	possible methods
@@ -37,6 +39,12 @@
 */
 
 #  define CIRCULAR_BUFFER_SIZE	128
+
+/*
+**	size of buffer used to read packets
+*/
+
+#  define READ_BUFFER_SIZE		512
 
 /*
 **	default values

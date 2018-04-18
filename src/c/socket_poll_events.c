@@ -1,18 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_poll_events.c                               :+:      :+:    :+:   */
+/*   socket_poll_events.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/19 10:31:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/11 22:51:09 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 10:54:53 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/18 11:03:19 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#define LIBSOCKET_INTERNAL
 
-static void	server_add_clients_to_set(fd_set *set, fd_set *err_set,
+#include "libsocket.h"
+
+static void	socket_add_clients_to_set(fd_set *set, fd_set *err_set,
 			t_vector *clients, int *fd_max)
 {
 	t_client	*client;
@@ -35,7 +37,7 @@ static void	server_add_clients_to_set(fd_set *set, fd_set *err_set,
 	}
 }
 
-static void	server_add_write_request_to_set(fd_set *set, t_circ_buffer *queue,
+static void	socket_add_write_request_to_set(fd_set *set, t_circ_buffer *queue,
 			int *fd_max)
 {
 	t_towrite	*towrite;
@@ -50,24 +52,19 @@ static void	server_add_write_request_to_set(fd_set *set, t_circ_buffer *queue,
 	}
 }
 
-static void	set_sets(t_server *server, fd_set *set, int *fd_max, uint8_t flags)
+static void	set_sets(t_socket *socket, fd_set *set, int *fd_max)
 {
 	FD_ZERO(&set[0]);
 	FD_ZERO(&set[1]);
 	FD_ZERO(&set[2]);
-	if (flags & ACCEPT_CONNECTIONS)
-	{
-		FD_SET(server->sockfd, &set[0]);
-		FD_SET(server->sockfd, &set[2]);
-	}
-	*fd_max = server->sockfd;
-	if (flags & ALLOW_READ)
-		server_add_clients_to_set(&set[0], &set[2], &server->clients, fd_max);
-	if (flags & ALLOW_WRITE)
-		server_add_write_request_to_set(&set[1], &server->write_queue, fd_max);
+	FD_SET(socket->sockfd, &set[0]);
+	FD_SET(socket->sockfd, &set[2]);
+	*fd_max = socket->sockfd;
+	socket_add_clients_to_set(&set[0], &set[2], &socket->clients, fd_max);
+	socket_add_write_request_to_set(&set[1], &socket->write_queue, fd_max);
 }
 
-void		server_poll_events(t_server *server, uint8_t flags)
+void		socket_poll_events(t_socket *socket)
 {
 	struct timeval	time;
 	fd_set			set[3];
@@ -75,22 +72,20 @@ void		server_poll_events(t_server *server, uint8_t flags)
 	int				ret;
 
 	fd_max = -42;
-	set_sets(server, (fd_set*)&set, &fd_max, flags);
-	time = server->timeout;
+	set_sets(socket, (fd_set*)&set, &fd_max);
+	time = socket->timeout;
 	if ((ret = select(fd_max + 1, &set[0], &set[1], &set[2],
 		&time)) <= 0)
 		return ;
-	if (FD_ISSET(server->sockfd, &set[0]))
+	if (FD_ISSET(socket->sockfd, &set[0]))
 	{
-		if (server->protocol == TCP)
-			server_add_incoming_client(server, &ret);
-		else if (server->protocol == UDP)
-			server_get_incoming_message(server, &ret);
+		if (socket->protocol == TCP)
+			socket_add_incoming_client(socket, &ret);
+		else if (socket->protocol == UDP)
+			socket_get_incoming_message(socket, &ret);
 	}
-	if (FD_ISSET(server->sockfd, &set[2]) && server->server_excpt)
-		server->server_excpt(server);
-	if (flags & ALLOW_WRITE)
-		server_manage_write_requests(server, &set[1], &ret);
-	if (flags & ALLOW_READ)
-		server_manage_incoming_messages(server, &set[0], &set[2], &ret);
+	if (FD_ISSET(socket->sockfd, &set[2]) && socket->socket_excpt)
+		socket->socket_excpt(socket);
+	socket_manage_incoming_messages(socket, &set[0], &set[2], &ret);
+	socket_manage_write_requests(socket, &set[1], &ret);
 }
