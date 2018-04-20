@@ -6,7 +6,7 @@
 #    By: pribault <pribault@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/16 14:01:19 by pribault          #+#    #+#              #
-#    Updated: 2018/04/19 13:26:57 by pribault         ###   ########.fr        #
+#    Updated: 2018/04/20 09:02:00 by pribault         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,12 @@ SRC_DIR = src
 OBJ_DIR = .obj
 OBJ = $(SRC:%.cpp=$(OBJ_DIR)/$(DIR)/%.o)
 FLAGS = -Wall -Wextra
-INCLUDES =	libsocket.h
-INCLUDE = $(INCLUDES:%.h=include/%.h)
+INCLUDES =	libsocket.h\
+			libsocket_socket.hpp\
+			libsocket_callbacks.hpp\
+			libsocket_message.hpp
+INCLUDE =	$(patsubst %.hpp, include/%.hpp,\
+			$(patsubst %.h, include/%.h, $(INCLUDES)))
 N = 0
 MAX = $(words $(OBJ))
 COMPILED = false

@@ -1,17 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libsocket_Callbacks.hpp                            :+:      :+:    :+:   */
+/*   libsocket_callbacks.hpp                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/19 13:27:29 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/19 13:28:25 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/20 08:57:35 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBSOCKET_CALLBACKS_HPP
 # define LIBSOCKET_CALLBACKS_HPP
+
+# include "libsocket_message.hpp"
 
 namespace libsocket
 {
@@ -31,6 +33,6 @@ namespace libsocket
 			virtual void	socket_excpt(Socket<CB>&);
 			virtual void	buffer_full(Socket<CB>&);
 	};
-};
+}
 
 #endif
