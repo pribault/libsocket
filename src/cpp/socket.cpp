@@ -1,35 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libsocket_client.hpp                               :+:      :+:    :+:   */
+/*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/04/19 14:00:57 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/20 11:15:45 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/20 14:51:55 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/20 14:52:47 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBSOCKET_CLIENT_HPP
-# define LIBSOCKET_CLIENT_HPP
+#include "libsocket_socket.hpp"
 
-# ifdef __cplusplus
+using namespace	libsocket;
 
-namespace	libsocket
+Socket::Socket(Callbacks callbacks)
 {
-	class	Client
-	{
-		public:
-
-		private:
-
-	};
+	this->callbacks = callbacks;
 }
-
-# else
-
-#  error "c++ only header"
-
-# endif
-
-#endif

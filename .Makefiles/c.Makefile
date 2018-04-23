@@ -6,7 +6,7 @@
 #    By: pribault <pribault@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/16 14:01:15 by pribault          #+#    #+#              #
-#    Updated: 2018/04/18 15:25:54 by pribault         ###   ########.fr        #
+#    Updated: 2018/04/20 13:46:12 by pribault         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,26 +39,30 @@ SRC =	socket_new.c socket_delete.c\
 DIR = c
 SRC_DIR = src
 OBJ_DIR = .obj
-OBJ = $(SRC:%.c=$(OBJ_DIR)/$(DIR)/%.o)
+OBJ =	$(sort $(patsubst %.c, $(OBJ_DIR)/$(DIR)/%.o, $(SRC)))
 FLAGS = -Wall -Wextra -Werror
 INCLUDES =	libsocket.h\
 			libsocket_defines.h\
 			libsocket_enums.h\
 			libsocket_structures.h
-INCLUDE = $(INCLUDES:%.h=include/%.h)
-N = 0
-MAX = $(words $(OBJ))
-COMPILED = false
-LIBFT = libft
-LIBFT_INC_DIR = $(LIBFT)/include
+INCLUDE =	$(sort \
+			$(patsubst %.h, include/%.h,\
+			$(INCLUDES)))
+N =	0
+MAX =	$(words $(OBJ))
+COMPILED =	false
+LIBFT =			libft
+LIBFT_INC_DIR =	$(LIBFT)/include
 LIBFT_INCLUDES =	libft.h\
 					ft_printf.h\
 					ft_joinf.h\
 					malloc.h\
 					prototypes.h\
 					structs.h
-DEPENDENCIES =	$(LIBFT_INCLUDES:%.h=$(LIBFT_INC_DIR)/%.h)
-PREFIX_NAME = libsocket_C
+DEPENDENCIES =	$(sort \
+				$(patsubst %.h, $(LIBFT_INC_DIR)/%.h,\
+				$(LIBFT_INCLUDES)))
+PREFIX_NAME =	libsocket_C
 
 .PHONY: clean fclean all re norme
 
@@ -80,7 +84,7 @@ $(OBJ_DIR)/$(DIR)/%.o: $(SRC_DIR)/$(DIR)/%.c $(INCLUDE) $(DEPENDENCIES) | $(OBJ_
 	@printf "\033[0m\033[38;5;166m[$(PREFIX_NAME) \033[38;5;7m%3u%%\033[38;5;166m] \033[0m🌶  \033[38;5;226m$(@:$(OBJ_DIR)/$(DIR)/%.o=%.o) done\033[0m\n" $(PERCENT)
 
 $(NAME): $(OBJ)
-	@ar qc $(NAME) $(OBJ)
+	@ar rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
 	@$(eval COMPILED=true)
 

@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/20 08:36:21 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/20 11:04:07 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,7 @@
 
 # ifdef __cplusplus
 
-namespace	libsocket
-{
-
-	template	<class CB>
-	class	Socket;
-	class	Client;
-
-	#  include "libsocket_socket.hpp"
-}
+#  include "libsocket_socket.hpp"
 
 # else
 
