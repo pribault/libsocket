@@ -6,15 +6,38 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 11:15:22 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/20 11:04:07 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/28 13:20:35 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/*
+**	Copyright © 2018 <pribault@student.42.fr>
+**
+**	Permission is hereby granted, free of charge, to any person obtaining a
+**	copy of this software and associated documentation files (the “Software”),
+**	to deal in the Software without restriction, including without limitation
+**	the rights to use, copy, modify, merge, publish, distribute, sublicense,
+**	and/or sell copies of the Software, and to permit persons to whom the
+**	Software is furnished to do so, subject to the following conditions:
+**
+**	The above copyright notice and this permission notice shall be included in
+**	all copies or substantial portions of the Software.
+**
+**	THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+**	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+**	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+**	THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+**	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+**	ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+**	OTHER DEALINGS IN THE SOFTWARE.
+*/
 
 #ifndef LIBSOCKET_H
 # define LIBSOCKET_H
 
 # define LIBSOCKET_VERSION_MAJOR	2
 # define LIBSOCKET_VERSION_MINOR	0
+# define LIBSOCKET_VERSION_PATCH	0
 
 # ifdef __cplusplus
 
@@ -151,7 +174,8 @@ void		socket_add_client_by_fd(t_socket *socket, int fd);
 
 /*
 **	handle specified events with flags.
-**	flags is a bitmask resulting of the binary 'or' operation of the followings values:
+**	flags is a bitmask resulting of the binary 'or' operation of the
+**	followings values:
 **	 - ACCEPT_CONNECTIONS
 **	 - ALLOW_READ
 **	 - ALLOW_WRITE
@@ -175,7 +199,8 @@ void		*client_get_data(t_client *client);
 
 /*
 **	get client address.
-**	the returned structure contains the address, its len, and the hostname string
+**	the returned structure contains the address, its len, and the hostname
+**	string
 */
 
 t_addr		*client_get_address(t_client *client);
@@ -189,7 +214,8 @@ int			client_get_fd(t_client *client);
 /*
 **	getter and setter for socket timeout.
 **	this timeout is the time after which socker_poll_events will return
-**	if no event is received (cannot read, cannot write, and no new client is connecting)
+**	if no event is received (cannot read, cannot write, and no new client is
+**	connecting)
 */
 
 t_timeval	*socket_get_timeout(t_socket *socket);
