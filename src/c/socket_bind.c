@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 14:13:41 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/28 13:18:19 by pribault         ###   ########.fr       */
+/*   Updated: 2018/04/28 15:10:51 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,21 +36,47 @@
 
 #include "libsocket.h"
 
+#include <errno.h>
+
+static void	*init_addr(t_socket *msocket)
+{
+	static struct sockaddr_in6	ipv6;
+	static struct sockaddr_in	ipv4;
+
+	if (msocket->domain == IPV4)
+	{
+		ipv4.sin_family = msocket->domain;
+		ipv4.sin_port = htons(msocket->port);
+		ipv4.sin_addr.s_addr = INADDR_ANY;
+		return (&ipv4);
+	}
+	else if (msocket->domain == IPV6)
+	{
+		ipv6.sin6_family = msocket->domain;
+		ipv6.sin6_port = htons(msocket->port);
+		ipv6.sin6_addr = in6addr_any;
+		return (&ipv6);
+	}
+	return (NULL);
+}
+
 static int	socket_bind_and_listen(t_socket *msocket)
 {
-	struct sockaddr_in6	addr;
-	int					n;
+	void	*addr;
+	int		n;
 
-	addr.sin6_family = msocket->domain;
-	addr.sin6_port = htons(msocket->port);
-	addr.sin6_addr = in6addr_any;
+	if (!(addr = init_addr(msocket)))
+		return (0);
 	n = 1;
 	if ((msocket->sockfd = socket(msocket->domain, msocket->protocol, 0))
 		< 0 || setsockopt(msocket->sockfd, SOL_SOCKET, SO_REUSEADDR, &n,
 		sizeof(int)) < 0 ||
-		bind(msocket->sockfd, (void*)&addr, (msocket->domain == IPV4) ?
+		bind(msocket->sockfd, (void*)addr, (msocket->domain == IPV4) ?
 		sizeof(struct sockaddr) : sizeof(struct sockaddr_in6)) < 0)
+	{
+		ft_printf("%s\n", strerror(errno));
 		return (0);
+	}
 	if (msocket->protocol == TCP &&
 		listen(msocket->sockfd, msocket->queue_max) < 0)
 		return (0);
