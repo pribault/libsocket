@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   basic_client.c                                     :+:      :+:    :+:   */
+/*   socket_manage_incoming_messages.c                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/21 13:58:24 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/28 13:17:05 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 11:05:18 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/28 13:18:58 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,64 +33,52 @@
 */
 
 #include "libsocket.h"
-#include "libft.h"
 
-static t_client *server = NULL;
-
-void	connected(t_socket *socket, t_client *client)
+static void	socket_get_client_message(t_socket *socket, t_client *client)
 {
-	(void)socket;
-	if (client_get_fd(client) > 2)
+	char	buffer[socket->read_size];
+	int		ret;
+	t_msg	msg;
+
+	if ((ret = read(client->fd, &buffer, socket->read_size)) > 0)
 	{
-		server = client;
-		ft_printf("connected\n");
+		if (socket->msg_recv)
+		{
+			msg.ptr = &buffer;
+			msg.size = ret;
+			socket->msg_recv(socket, client, &msg);
+		}
 	}
+	else if (!ret)
+		socket_remove_client(socket, client);
 }
 
-void	disconnected(t_socket *socket, t_client *client)
+void		socket_manage_incoming_messages(t_socket *socket, fd_set *set,
+			fd_set *err_set, int *n_evts)
 {
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = NULL;
-		ft_printf("disconnected\n");
-	}
-}
+	t_vector	*vector;
+	t_client	*client;
+	size_t		i;
 
-void	msg_recv(t_socket *socket, t_client *client, t_msg *msg)
-{
-	ft_printf("message of size %d received\n", msg->size);
-	if (client_get_fd(client) == 0 && server)
-		socket_enqueue_write(socket, server, msg);
-	else
-		socket_enqueue_write_by_fd(socket, 1, msg);
-}
-
-void	msg_send(t_socket *socket, t_client *client, t_msg *msg)
-{
-	(void)socket;
-	if (client_get_fd(client) <= 2)
+	if ((*n_evts) < 1)
 		return ;
-	ft_printf("message of size %d sended\n", msg->size);
-}
-
-int		main(int argc, char **argv)
-{
-	t_socket	*socket;
-
-	if (argc != 3)
-		return (1);
-	socket = socket_new();
-	socket_set_callback(socket, SOCKET_CLIENT_ADD_CB, &connected);
-	socket_set_callback(socket, SOCKET_CLIENT_DEL_CB, &disconnected);
-	socket_set_callback(socket, SOCKET_MSG_RECV_CB, &msg_recv);
-	socket_set_callback(socket, SOCKET_MSG_SEND_CB, &msg_send);
-	socket_add_client_by_fd(socket, 0);
-	if (!socket_connect(socket, (t_method){TCP, IPV4}, argv[1], argv[2]))
-		return (1);
-	while (1)
+	vector = &socket->clients;
+	i = vector->n;
+	while (--i != (size_t)-1 && (*n_evts))
 	{
-		socket_poll_events(socket, ALLOW_READ | ALLOW_WRITE);
+		if ((client = ft_vector_get(vector, i)))
+		{
+			if (FD_ISSET(client->fd, err_set))
+			{
+				if (socket->client_excpt)
+					socket->client_excpt(socket, client);
+				(*n_evts)--;
+			}
+			else if (FD_ISSET(client->fd, set))
+			{
+				socket_get_client_message(socket, client);
+				(*n_evts)--;
+			}
+		}
 	}
-	return (0);
 }

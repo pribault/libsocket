@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   basic_client.c                                     :+:      :+:    :+:   */
+/*   libsocket_enums.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/21 13:58:24 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/28 13:17:05 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/16 13:35:56 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/28 13:17:27 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,65 +32,58 @@
 **	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "libsocket.h"
-#include "libft.h"
+#ifndef LIBSOCKET_ENUMS_H
+# define LIBSOCKET_ENUMS_H
 
-static t_client *server = NULL;
+# ifndef __cplusplus
 
-void	connected(t_socket *socket, t_client *client)
+#  include "libsocket_defines.h"
+
+typedef enum	e_protocol
 {
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = client;
-		ft_printf("connected\n");
-	}
-}
+	TCP = SOCK_STREAM,
+	UDP = SOCK_DGRAM
+}				t_protocol;
 
-void	disconnected(t_socket *socket, t_client *client)
+typedef enum	e_domain
 {
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = NULL;
-		ft_printf("disconnected\n");
-	}
-}
+	IPV4 = AF_INET,
+	IPV6 = AF_INET6
+}				t_domain;
 
-void	msg_recv(t_socket *socket, t_client *client, t_msg *msg)
+typedef enum	e_write_type
 {
-	ft_printf("message of size %d received\n", msg->size);
-	if (client_get_fd(client) == 0 && server)
-		socket_enqueue_write(socket, server, msg);
-	else
-		socket_enqueue_write_by_fd(socket, 1, msg);
-}
+	WRITE_BY_FD,
+	WRITE_BY_ADDR
+}				t_write_type;
 
-void	msg_send(t_socket *socket, t_client *client, t_msg *msg)
+/*
+**	callbacks used with socket_set_callback
+*/
+
+typedef enum	e_callback
 {
-	(void)socket;
-	if (client_get_fd(client) <= 2)
-		return ;
-	ft_printf("message of size %d sended\n", msg->size);
-}
+	SOCKET_CLIENT_ADD_CB = 0,
+	SOCKET_CLIENT_DEL_CB,
+	SOCKET_MSG_RECV_CB,
+	SOCKET_MSG_SEND_CB,
+	SOCKET_MSG_TRASH_CB,
+	SOCKET_CLIENT_EXCEPTION_CB,
+	SOCKET_BIND_CB,
+	SOCKET_UNBIND_CB,
+	SOCKET_EXCEPTION_CB,
+	SOCKET_BUFFER_FULL_CB,
+	SOCKET_CALLBACK_MAX
+}				t_callback;
 
-int		main(int argc, char **argv)
-{
-	t_socket	*socket;
+# else
 
-	if (argc != 3)
-		return (1);
-	socket = socket_new();
-	socket_set_callback(socket, SOCKET_CLIENT_ADD_CB, &connected);
-	socket_set_callback(socket, SOCKET_CLIENT_DEL_CB, &disconnected);
-	socket_set_callback(socket, SOCKET_MSG_RECV_CB, &msg_recv);
-	socket_set_callback(socket, SOCKET_MSG_SEND_CB, &msg_send);
-	socket_add_client_by_fd(socket, 0);
-	if (!socket_connect(socket, (t_method){TCP, IPV4}, argv[1], argv[2]))
-		return (1);
-	while (1)
-	{
-		socket_poll_events(socket, ALLOW_READ | ALLOW_WRITE);
-	}
-	return (0);
-}
+#  pragma message __FILE__ "C only header"
+
+# endif
+
+#else
+
+# pragma message __FILE__ "already included"
+
+#endif

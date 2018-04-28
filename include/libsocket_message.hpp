@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   basic_client.c                                     :+:      :+:    :+:   */
+/*   libsocket_message.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/21 13:58:24 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/28 13:17:05 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/20 08:55:38 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/28 13:17:30 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,65 +32,68 @@
 **	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "libsocket.h"
-#include "libft.h"
+#ifndef LIBSOCKET_MESSAGE_HPP
+# define LIBSOCKET_MESSAGE_HPP
 
-static t_client *server = NULL;
+# ifdef __cplusplus
 
-void	connected(t_socket *socket, t_client *client)
+#  include "libsocket_client.hpp"
+
+#  include <inttypes.h>
+#  include <string.h>
+#  include <stdio.h>
+#  include <string>
+#  include <vector>
+
+namespace	libsocket
 {
-	(void)socket;
-	if (client_get_fd(client) > 2)
+	class	Message
 	{
-		server = client;
-		ft_printf("connected\n");
-	}
+		public:
+
+			//	constructors
+			Message(void);
+			Message(std::string& string);
+			Message(void *ptr, uint64_t size);
+
+			//	destructor
+			~Message(void);
+
+			//	setter
+			void	set_destinary(Client &client);
+
+			//	operators
+			Message&	operator=(Message& message);
+			Message&	operator=(std::string string);
+			Message&	operator=(std::string& string);
+			Message&	operator+=(Message& message);
+			Message&	operator+=(std::string string);
+			Message&	operator+=(std::string& string);
+
+			Message&	append(Message& message);
+			Message&	append(std::string string);
+			Message&	append(std::string& string);
+			Message&	append(void *ptr, uint64_t size);
+
+			//	debug
+			void	debug(void);
+			void	print(void);
+
+		protected:
+
+			std::vector<uint8_t>	vector;
+
+		private:
+
+			Client	client;
+			bool	null_terminated;
+	};
 }
 
-void	disconnected(t_socket *socket, t_client *client)
-{
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = NULL;
-		ft_printf("disconnected\n");
-	}
-}
+# else
 
-void	msg_recv(t_socket *socket, t_client *client, t_msg *msg)
-{
-	ft_printf("message of size %d received\n", msg->size);
-	if (client_get_fd(client) == 0 && server)
-		socket_enqueue_write(socket, server, msg);
-	else
-		socket_enqueue_write_by_fd(socket, 1, msg);
-}
+#  error "c++ only header"
 
-void	msg_send(t_socket *socket, t_client *client, t_msg *msg)
-{
-	(void)socket;
-	if (client_get_fd(client) <= 2)
-		return ;
-	ft_printf("message of size %d sended\n", msg->size);
-}
+# endif
 
-int		main(int argc, char **argv)
-{
-	t_socket	*socket;
-
-	if (argc != 3)
-		return (1);
-	socket = socket_new();
-	socket_set_callback(socket, SOCKET_CLIENT_ADD_CB, &connected);
-	socket_set_callback(socket, SOCKET_CLIENT_DEL_CB, &disconnected);
-	socket_set_callback(socket, SOCKET_MSG_RECV_CB, &msg_recv);
-	socket_set_callback(socket, SOCKET_MSG_SEND_CB, &msg_send);
-	socket_add_client_by_fd(socket, 0);
-	if (!socket_connect(socket, (t_method){TCP, IPV4}, argv[1], argv[2]))
-		return (1);
-	while (1)
-	{
-		socket_poll_events(socket, ALLOW_READ | ALLOW_WRITE);
-	}
-	return (0);
-}
+#endif

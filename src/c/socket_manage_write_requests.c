@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   basic_client.c                                     :+:      :+:    :+:   */
+/*   socket_manage_write_requests.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/21 13:58:24 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/28 13:17:05 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 11:10:58 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/28 13:19:01 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,64 +33,57 @@
 */
 
 #include "libsocket.h"
-#include "libft.h"
 
-static t_client *server = NULL;
-
-void	connected(t_socket *socket, t_client *client)
+static int	socket_try_write(t_circ_buffer *buffer, t_towrite *towrite)
 {
-	(void)socket;
-	if (client_get_fd(client) > 2)
+	if (towrite->client.write_type == WRITE_BY_FD)
 	{
-		server = client;
-		ft_printf("connected\n");
-	}
-}
-
-void	disconnected(t_socket *socket, t_client *client)
-{
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = NULL;
-		ft_printf("disconnected\n");
-	}
-}
-
-void	msg_recv(t_socket *socket, t_client *client, t_msg *msg)
-{
-	ft_printf("message of size %d received\n", msg->size);
-	if (client_get_fd(client) == 0 && server)
-		socket_enqueue_write(socket, server, msg);
-	else
-		socket_enqueue_write_by_fd(socket, 1, msg);
-}
-
-void	msg_send(t_socket *socket, t_client *client, t_msg *msg)
-{
-	(void)socket;
-	if (client_get_fd(client) <= 2)
-		return ;
-	ft_printf("message of size %d sended\n", msg->size);
-}
-
-int		main(int argc, char **argv)
-{
-	t_socket	*socket;
-
-	if (argc != 3)
+		if (write(towrite->client.fd, towrite->data.ptr,
+			towrite->data.size) < 0)
+		{
+			ft_circ_buffer_enqueue(buffer, towrite);
+			return (0);
+		}
 		return (1);
-	socket = socket_new();
-	socket_set_callback(socket, SOCKET_CLIENT_ADD_CB, &connected);
-	socket_set_callback(socket, SOCKET_CLIENT_DEL_CB, &disconnected);
-	socket_set_callback(socket, SOCKET_MSG_RECV_CB, &msg_recv);
-	socket_set_callback(socket, SOCKET_MSG_SEND_CB, &msg_send);
-	socket_add_client_by_fd(socket, 0);
-	if (!socket_connect(socket, (t_method){TCP, IPV4}, argv[1], argv[2]))
-		return (1);
-	while (1)
+	}
+	else if (towrite->client.write_type == WRITE_BY_ADDR)
 	{
-		socket_poll_events(socket, ALLOW_READ | ALLOW_WRITE);
+		if (sendto(towrite->client.fd, towrite->data.ptr,
+			towrite->data.size, 0, (void*)&towrite->client.addr,
+			towrite->client.addr.len) < 0)
+		{
+			ft_circ_buffer_enqueue(buffer, towrite);
+			return (0);
+		}
+		return (1);
 	}
 	return (0);
+}
+
+void		socket_manage_write_requests(t_socket *socket, fd_set *set,
+			int *n_evts)
+{
+	t_towrite		*towrite;
+	t_circ_buffer	*buffer;
+	uint64_t		size;
+	uint64_t		i;
+
+	if ((*n_evts) < 1)
+		return ;
+	buffer = &socket->write_queue;
+	i = (uint64_t)-1;
+	size = ft_circ_buffer_get_size(buffer);
+	while (++i < size &&
+		(towrite = ft_circ_buffer_dequeue(buffer)))
+		if (FD_ISSET(towrite->client.fd, set))
+		{
+			FD_CLR(towrite->client.fd, set);
+			if (!socket_try_write(buffer, towrite))
+				return ;
+			if (socket->msg_send)
+				socket->msg_send(socket, &towrite->client, &towrite->data);
+			(*n_evts)--;
+		}
+		else
+			ft_circ_buffer_enqueue(buffer, towrite);
 }

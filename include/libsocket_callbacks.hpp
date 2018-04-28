@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   basic_client.c                                     :+:      :+:    :+:   */
+/*   libsocket_callbacks.hpp                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/21 13:58:24 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/28 13:17:05 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/19 13:27:29 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/28 13:17:19 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,65 +32,39 @@
 **	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "libsocket.h"
-#include "libft.h"
+#ifndef LIBSOCKET_CALLBACKS_HPP
+# define LIBSOCKET_CALLBACKS_HPP
 
-static t_client *server = NULL;
+# ifdef __cplusplus
 
-void	connected(t_socket *socket, t_client *client)
+#  include "libsocket_message.hpp"
+#  include "libsocket_client.hpp"
+
+namespace libsocket
 {
-	(void)socket;
-	if (client_get_fd(client) > 2)
+	class	Socket;
+
+	class	Callbacks
 	{
-		server = client;
-		ft_printf("connected\n");
-	}
+		public:
+
+			virtual void	client_add(Socket& socket, Client& client);
+			virtual void	client_del(Socket&, Client&);
+			virtual void	msg_recv(Socket&, Client&, Message&);
+			virtual void	msg_send(Socket&, Client&, Message&);
+			virtual void	msg_trash(Socket&, Client&, Message&);
+			virtual void	client_excpt(Socket&, Client&);
+			virtual void	socket_bind(Socket&);
+			virtual void	socket_unbind(Socket&);
+			virtual void	socket_excpt(Socket&);
+			virtual void	buffer_full(Socket&);
+	};
 }
 
-void	disconnected(t_socket *socket, t_client *client)
-{
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = NULL;
-		ft_printf("disconnected\n");
-	}
-}
+# else
 
-void	msg_recv(t_socket *socket, t_client *client, t_msg *msg)
-{
-	ft_printf("message of size %d received\n", msg->size);
-	if (client_get_fd(client) == 0 && server)
-		socket_enqueue_write(socket, server, msg);
-	else
-		socket_enqueue_write_by_fd(socket, 1, msg);
-}
+#  error "c++ only header"
 
-void	msg_send(t_socket *socket, t_client *client, t_msg *msg)
-{
-	(void)socket;
-	if (client_get_fd(client) <= 2)
-		return ;
-	ft_printf("message of size %d sended\n", msg->size);
-}
+# endif
 
-int		main(int argc, char **argv)
-{
-	t_socket	*socket;
-
-	if (argc != 3)
-		return (1);
-	socket = socket_new();
-	socket_set_callback(socket, SOCKET_CLIENT_ADD_CB, &connected);
-	socket_set_callback(socket, SOCKET_CLIENT_DEL_CB, &disconnected);
-	socket_set_callback(socket, SOCKET_MSG_RECV_CB, &msg_recv);
-	socket_set_callback(socket, SOCKET_MSG_SEND_CB, &msg_send);
-	socket_add_client_by_fd(socket, 0);
-	if (!socket_connect(socket, (t_method){TCP, IPV4}, argv[1], argv[2]))
-		return (1);
-	while (1)
-	{
-		socket_poll_events(socket, ALLOW_READ | ALLOW_WRITE);
-	}
-	return (0);
-}
+#endif

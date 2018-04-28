@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   basic_client.c                                     :+:      :+:    :+:   */
+/*   socket_connect.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/21 13:58:24 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/28 13:17:05 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 10:26:20 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/28 13:18:22 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,64 +33,51 @@
 */
 
 #include "libsocket.h"
-#include "libft.h"
 
-static t_client *server = NULL;
-
-void	connected(t_socket *socket, t_client *client)
+static int	iter_on_addresses(t_socket *socket, t_client *client,
+			struct addrinfo *result)
 {
-	(void)socket;
-	if (client_get_fd(client) > 2)
+	struct addrinfo	*addr;
+
+	addr = result;
+	while (addr)
 	{
-		server = client;
-		ft_printf("connected\n");
+		if (connect(client->fd, addr->ai_addr, addr->ai_addrlen) >= 0)
+		{
+			ft_memcpy(&client->addr, addr->ai_addr, addr->ai_addrlen);
+			client->addr.len = addr->ai_addrlen;
+			client->write_type = WRITE_BY_ADDR;
+			ft_vector_add(&socket->clients, client);
+			if (socket->client_add)
+				socket->client_add(socket, ft_vector_get(&socket->clients,
+				socket->clients.n - 1));
+			freeaddrinfo(result);
+			return (1);
+		}
+		addr = addr->ai_next;
 	}
-}
-
-void	disconnected(t_socket *socket, t_client *client)
-{
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = NULL;
-		ft_printf("disconnected\n");
-	}
-}
-
-void	msg_recv(t_socket *socket, t_client *client, t_msg *msg)
-{
-	ft_printf("message of size %d received\n", msg->size);
-	if (client_get_fd(client) == 0 && server)
-		socket_enqueue_write(socket, server, msg);
-	else
-		socket_enqueue_write_by_fd(socket, 1, msg);
-}
-
-void	msg_send(t_socket *socket, t_client *client, t_msg *msg)
-{
-	(void)socket;
-	if (client_get_fd(client) <= 2)
-		return ;
-	ft_printf("message of size %d sended\n", msg->size);
-}
-
-int		main(int argc, char **argv)
-{
-	t_socket	*socket;
-
-	if (argc != 3)
-		return (1);
-	socket = socket_new();
-	socket_set_callback(socket, SOCKET_CLIENT_ADD_CB, &connected);
-	socket_set_callback(socket, SOCKET_CLIENT_DEL_CB, &disconnected);
-	socket_set_callback(socket, SOCKET_MSG_RECV_CB, &msg_recv);
-	socket_set_callback(socket, SOCKET_MSG_SEND_CB, &msg_send);
-	socket_add_client_by_fd(socket, 0);
-	if (!socket_connect(socket, (t_method){TCP, IPV4}, argv[1], argv[2]))
-		return (1);
-	while (1)
-	{
-		socket_poll_events(socket, ALLOW_READ | ALLOW_WRITE);
-	}
+	freeaddrinfo(result);
 	return (0);
+}
+
+int			socket_connect(t_socket *msocket, t_method method, char *address,
+			char *port)
+{
+	t_client		client;
+	struct addrinfo	hints;
+	struct addrinfo	*result;
+
+	ft_bzero(&hints, sizeof(struct addrinfo));
+	ft_bzero(&client, sizeof(t_client));
+	hints.ai_family = method.domain;
+	hints.ai_socktype = method.protocol;
+	result = NULL;
+	if (getaddrinfo(address, port, &hints, &result) != 0 ||
+		(client.fd = socket(method.domain, method.protocol, 0)) < 0)
+	{
+		if (result)
+			freeaddrinfo(result);
+		return (0);
+	}
+	return (iter_on_addresses(msocket, &client, result));
 }

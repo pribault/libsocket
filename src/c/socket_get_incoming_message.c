@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   basic_client.c                                     :+:      :+:    :+:   */
+/*   socket_get_incoming_message.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/21 13:58:24 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/28 13:17:05 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 11:01:35 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/28 13:18:50 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,65 +32,39 @@
 **	OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#define LIBSOCKET_INTERNAL
+
 #include "libsocket.h"
-#include "libft.h"
 
-static t_client *server = NULL;
-
-void	connected(t_socket *socket, t_client *client)
+static void	socket_add_client_udp(t_socket *socket, t_client *client)
 {
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = client;
-		ft_printf("connected\n");
-	}
+	client->write_type = WRITE_BY_ADDR;
+	ft_vector_add(&socket->clients, client);
+	socket->client_add(socket, ft_vector_get(&socket->clients,
+	socket->clients.n - 1));
 }
 
-void	disconnected(t_socket *socket, t_client *client)
+void		socket_get_incoming_message(t_socket *socket, int *n_evts)
 {
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = NULL;
-		ft_printf("disconnected\n");
-	}
-}
+	char		buffer[socket->read_size];
+	t_client	client;
+	t_client	*new;
+	t_msg		msg;
+	int			ret;
 
-void	msg_recv(t_socket *socket, t_client *client, t_msg *msg)
-{
-	ft_printf("message of size %d received\n", msg->size);
-	if (client_get_fd(client) == 0 && server)
-		socket_enqueue_write(socket, server, msg);
-	else
-		socket_enqueue_write_by_fd(socket, 1, msg);
-}
-
-void	msg_send(t_socket *socket, t_client *client, t_msg *msg)
-{
-	(void)socket;
-	if (client_get_fd(client) <= 2)
+	client.fd = socket->sockfd;
+	client.addr.len = sizeof(struct sockaddr_storage);
+	if ((ret = recvfrom(socket->sockfd, &buffer, socket->read_size,
+		0, (void*)&client.addr.addr, &client.addr.len)) == -1)
 		return ;
-	ft_printf("message of size %d sended\n", msg->size);
-}
-
-int		main(int argc, char **argv)
-{
-	t_socket	*socket;
-
-	if (argc != 3)
-		return (1);
-	socket = socket_new();
-	socket_set_callback(socket, SOCKET_CLIENT_ADD_CB, &connected);
-	socket_set_callback(socket, SOCKET_CLIENT_DEL_CB, &disconnected);
-	socket_set_callback(socket, SOCKET_MSG_RECV_CB, &msg_recv);
-	socket_set_callback(socket, SOCKET_MSG_SEND_CB, &msg_send);
-	socket_add_client_by_fd(socket, 0);
-	if (!socket_connect(socket, (t_method){TCP, IPV4}, argv[1], argv[2]))
-		return (1);
-	while (1)
+	(*n_evts)--;
+	if (!(new = socket_find_client_by_address(socket, &client.addr.addr)) &&
+		socket->client_add)
+		socket_add_client_udp(socket, &client);
+	if (socket->msg_recv)
 	{
-		socket_poll_events(socket, ALLOW_READ | ALLOW_WRITE);
+		msg = (t_msg){&buffer, ret};
+		socket->msg_recv(socket, ft_vector_get(&socket->clients,
+		socket->clients.n - 1), &msg);
 	}
-	return (0);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   basic_client.c                                     :+:      :+:    :+:   */
+/*   libsocket_defines.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/21 13:58:24 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/28 13:17:05 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/16 13:38:02 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/28 13:17:25 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,65 +32,88 @@
 **	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "libsocket.h"
-#include "libft.h"
+#ifndef LIBSOCKET_DEFINES_H
+# define LIBSOCKET_DEFINES_H
 
-static t_client *server = NULL;
+# ifndef __cplusplus
 
-void	connected(t_socket *socket, t_client *client)
-{
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = client;
-		ft_printf("connected\n");
-	}
-}
+#  define METHOD(prot, dom)	(t_method){prot, dom}
 
-void	disconnected(t_socket *socket, t_client *client)
-{
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = NULL;
-		ft_printf("disconnected\n");
-	}
-}
+/*
+**	possible methods
+*/
 
-void	msg_recv(t_socket *socket, t_client *client, t_msg *msg)
-{
-	ft_printf("message of size %d received\n", msg->size);
-	if (client_get_fd(client) == 0 && server)
-		socket_enqueue_write(socket, server, msg);
-	else
-		socket_enqueue_write_by_fd(socket, 1, msg);
-}
+#  ifdef LIBSOCKET_STRUCTURES_H
 
-void	msg_send(t_socket *socket, t_client *client, t_msg *msg)
-{
-	(void)socket;
-	if (client_get_fd(client) <= 2)
-		return ;
-	ft_printf("message of size %d sended\n", msg->size);
-}
+#   define TCP_IPV4	(t_method){TCP, IPV4}
+#   define TCP_IPV6	(t_method){TCP, IPV6}
+#   define UDP_IPV4	(t_method){UDP, IPV4}
+#   define UDP_IPV6	(t_method){UDP, IPV6}
 
-int		main(int argc, char **argv)
-{
-	t_socket	*socket;
+#  else
 
-	if (argc != 3)
-		return (1);
-	socket = socket_new();
-	socket_set_callback(socket, SOCKET_CLIENT_ADD_CB, &connected);
-	socket_set_callback(socket, SOCKET_CLIENT_DEL_CB, &disconnected);
-	socket_set_callback(socket, SOCKET_MSG_RECV_CB, &msg_recv);
-	socket_set_callback(socket, SOCKET_MSG_SEND_CB, &msg_send);
-	socket_add_client_by_fd(socket, 0);
-	if (!socket_connect(socket, (t_method){TCP, IPV4}, argv[1], argv[2]))
-		return (1);
-	while (1)
-	{
-		socket_poll_events(socket, ALLOW_READ | ALLOW_WRITE);
-	}
-	return (0);
-}
+#   pragma message "libsocket.h not included, partial defines"
+
+#  endif
+
+/*
+**	redefine BYTE macro if necessary
+*/
+
+#  ifndef BYTE
+
+#   define BYTE(shift)	(1 << shift)
+
+#  endif
+
+#  ifndef TIMEVAL
+
+#   define TIMEVAL(s, us)	(struct timeval){s, us}
+
+#  endif
+
+/*
+**	macros used in socket_poll_events to define
+**	the type of events to handle
+*/
+
+#  define ACCEPT_CONNECTIONS		BYTE(0)
+#  define ALLOW_READ				BYTE(1)
+#  define ALLOW_WRITE			BYTE(2)
+
+/*
+**	number of messages that can be enqueued to write in a socket
+*/
+
+#  ifdef LIBSOCKET_INTERNAL
+
+#   define CIRCULAR_BUFFER_SIZE	128
+
+/*
+**	default values
+*/
+
+#   define DEFAULT_READ_BUFFER_SIZE	512
+#   define DEFAULT_QUEUE_MAX			2
+#   define DEFAULT_TIMEOUT_S			1
+#   define DEFAULT_TIMEOUT_US		0
+
+/*
+**	option masks
+*/
+
+#   define SERVER_RUNNING		0x1
+
+#  endif
+
+# else
+
+#  pragma message __FILE__ "C only header"
+
+# endif
+
+#else
+
+# pragma message __FILE__ "already included"
+
+#endif

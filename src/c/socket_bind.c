@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   basic_client.c                                     :+:      :+:    :+:   */
+/*   socket_bind.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/21 13:58:24 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/28 13:17:05 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/16 14:13:41 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/28 13:18:19 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,65 +32,40 @@
 **	OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#define LIBSOCKET_INTERNAL
+
 #include "libsocket.h"
-#include "libft.h"
 
-static t_client *server = NULL;
-
-void	connected(t_socket *socket, t_client *client)
+static int	socket_bind_and_listen(t_socket *msocket)
 {
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = client;
-		ft_printf("connected\n");
-	}
+	struct sockaddr_in6	addr;
+	int					n;
+
+	addr.sin6_family = msocket->domain;
+	addr.sin6_port = htons(msocket->port);
+	addr.sin6_addr = in6addr_any;
+	n = 1;
+	if ((msocket->sockfd = socket(msocket->domain, msocket->protocol, 0))
+		< 0 || setsockopt(msocket->sockfd, SOL_SOCKET, SO_REUSEADDR, &n,
+		sizeof(int)) < 0 ||
+		bind(msocket->sockfd, (void*)&addr, (msocket->domain == IPV4) ?
+		sizeof(struct sockaddr) : sizeof(struct sockaddr_in6)) < 0)
+		return (0);
+	if (msocket->protocol == TCP &&
+		listen(msocket->sockfd, msocket->queue_max) < 0)
+		return (0);
+	if (msocket->socket_bind)
+		msocket->socket_bind(msocket);
+	return (1);
 }
 
-void	disconnected(t_socket *socket, t_client *client)
+int			socket_bind(t_socket *socket, t_method method, char *port)
 {
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = NULL;
-		ft_printf("disconnected\n");
-	}
-}
-
-void	msg_recv(t_socket *socket, t_client *client, t_msg *msg)
-{
-	ft_printf("message of size %d received\n", msg->size);
-	if (client_get_fd(client) == 0 && server)
-		socket_enqueue_write(socket, server, msg);
-	else
-		socket_enqueue_write_by_fd(socket, 1, msg);
-}
-
-void	msg_send(t_socket *socket, t_client *client, t_msg *msg)
-{
-	(void)socket;
-	if (client_get_fd(client) <= 2)
-		return ;
-	ft_printf("message of size %d sended\n", msg->size);
-}
-
-int		main(int argc, char **argv)
-{
-	t_socket	*socket;
-
-	if (argc != 3)
-		return (1);
-	socket = socket_new();
-	socket_set_callback(socket, SOCKET_CLIENT_ADD_CB, &connected);
-	socket_set_callback(socket, SOCKET_CLIENT_DEL_CB, &disconnected);
-	socket_set_callback(socket, SOCKET_MSG_RECV_CB, &msg_recv);
-	socket_set_callback(socket, SOCKET_MSG_SEND_CB, &msg_send);
-	socket_add_client_by_fd(socket, 0);
-	if (!socket_connect(socket, (t_method){TCP, IPV4}, argv[1], argv[2]))
-		return (1);
-	while (1)
-	{
-		socket_poll_events(socket, ALLOW_READ | ALLOW_WRITE);
-	}
-	return (0);
+	if ((socket->opt & SERVER_RUNNING))
+		return (0);
+	socket->opt |= SERVER_RUNNING;
+	socket->port = ft_atou(port);
+	socket->protocol = method.protocol;
+	socket->domain = method.domain;
+	return (socket_bind_and_listen(socket));
 }

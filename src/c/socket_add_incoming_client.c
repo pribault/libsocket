@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   basic_client.c                                     :+:      :+:    :+:   */
+/*   socket_add_incoming_client.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/21 13:58:24 by pribault          #+#    #+#             */
-/*   Updated: 2018/04/28 13:17:05 by pribault         ###   ########.fr       */
+/*   Created: 2018/04/18 10:57:49 by pribault          #+#    #+#             */
+/*   Updated: 2018/04/28 13:18:07 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,64 +33,24 @@
 */
 
 #include "libsocket.h"
-#include "libft.h"
 
-static t_client *server = NULL;
-
-void	connected(t_socket *socket, t_client *client)
+void	socket_add_incoming_client(t_socket *socket, int *n_evts)
 {
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = client;
-		ft_printf("connected\n");
-	}
-}
+	struct hostent	*host;
+	t_client		client;
 
-void	disconnected(t_socket *socket, t_client *client)
-{
-	(void)socket;
-	if (client_get_fd(client) > 2)
-	{
-		server = NULL;
-		ft_printf("disconnected\n");
-	}
-}
-
-void	msg_recv(t_socket *socket, t_client *client, t_msg *msg)
-{
-	ft_printf("message of size %d received\n", msg->size);
-	if (client_get_fd(client) == 0 && server)
-		socket_enqueue_write(socket, server, msg);
-	else
-		socket_enqueue_write_by_fd(socket, 1, msg);
-}
-
-void	msg_send(t_socket *socket, t_client *client, t_msg *msg)
-{
-	(void)socket;
-	if (client_get_fd(client) <= 2)
+	ft_bzero(&client, sizeof(t_client));
+	client.addr.len = sizeof(struct sockaddr);
+	if ((*n_evts) < 1 ||
+		(client.fd = accept(socket->sockfd, (void*)&client.addr,
+		&client.addr.len)) < 0)
 		return ;
-	ft_printf("message of size %d sended\n", msg->size);
-}
-
-int		main(int argc, char **argv)
-{
-	t_socket	*socket;
-
-	if (argc != 3)
-		return (1);
-	socket = socket_new();
-	socket_set_callback(socket, SOCKET_CLIENT_ADD_CB, &connected);
-	socket_set_callback(socket, SOCKET_CLIENT_DEL_CB, &disconnected);
-	socket_set_callback(socket, SOCKET_MSG_RECV_CB, &msg_recv);
-	socket_set_callback(socket, SOCKET_MSG_SEND_CB, &msg_send);
-	socket_add_client_by_fd(socket, 0);
-	if (!socket_connect(socket, (t_method){TCP, IPV4}, argv[1], argv[2]))
-		return (1);
-	while (1)
-	{
-		socket_poll_events(socket, ALLOW_READ | ALLOW_WRITE);
-	}
-	return (0);
+	host = gethostbyaddr(&client.addr.addr, client.addr.len, socket->domain);
+	client.addr.str = ft_strdup(host->h_name);
+	client.write_type = WRITE_BY_ADDR;
+	(*n_evts)--;
+	ft_vector_add(&socket->clients, &client);
+	if (socket->client_add)
+		socket->client_add(socket, ft_vector_get(&socket->clients,
+		socket->clients.n - 1));
 }
