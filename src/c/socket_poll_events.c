@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 10:54:53 by pribault          #+#    #+#             */
-/*   Updated: 2018/05/23 15:58:00 by pribault         ###   ########.fr       */
+/*   Updated: 2018/08/25 15:31:26 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void		socket_poll_events(t_socket *socket, uint8_t flags)
 	int				fd_max;
 	int				ret;
 
-	fd_max = -42;
+	fd_max = 0;
 	set_sets(socket, (fd_set*)&set, &fd_max, flags);
 	time = socket->timeout;
 	if ((ret = select(fd_max + 1, &set[0], &set[1], &set[2],

@@ -6,7 +6,7 @@
 /*   By: pribault <pribault@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 11:01:35 by pribault          #+#    #+#             */
-/*   Updated: 2018/05/23 16:47:44 by pribault         ###   ########.fr       */
+/*   Updated: 2018/07/03 00:21:27 by pribault         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,15 @@
 
 static void	socket_add_client_udp(t_socket *socket, t_client *client)
 {
+	struct hostent	*host;
+
 	client->write_type = WRITE_BY_ADDR;
+	if ((host = gethostbyaddr(&client->addr.addr, client->addr.len,
+		socket->domain)))
+		client->addr.str = ft_strdup(host->h_name);
 	ft_vector_add(&socket->clients, client);
-	socket->client_add(socket, ft_vector_get(&socket->clients,
+	if (socket->client_add)
+		socket->client_add(socket, ft_vector_get(&socket->clients,
 	socket->clients.n - 1));
 }
 
@@ -52,14 +58,14 @@ void		socket_get_incoming_message(t_socket *socket, int *n_evts)
 	t_msg		msg;
 	int			ret;
 
+	ft_bzero(&client, sizeof(t_client));
 	client.fd = socket->sockfd;
 	client.addr.len = sizeof(struct sockaddr_storage);
 	if ((ret = recvfrom(socket->sockfd, &buffer, socket->read_size,
 		0, (void*)&client.addr.addr, &client.addr.len)) == -1)
 		return ;
 	(*n_evts)--;
-	if (!(new = socket_find_client_by_address(socket, &client.addr.addr)) &&
-		socket->client_add)
+	if (!(new = socket_find_client_by_address(socket, &client.addr.addr)))
 		socket_add_client_udp(socket, &client);
 	if (socket->msg_recv)
 	{
