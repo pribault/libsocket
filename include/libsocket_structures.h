@@ -38,6 +38,10 @@
 # ifndef __cplusplus
 
 #  include "libsocket_enums.h"
+#  ifdef __ANDROID__
+#   include <linux/ipv6.h>
+#   include <netinet/in.h>
+#  endif
 
 #  include "libft.h"
 
